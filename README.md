@@ -1,2 +1,6 @@
 # Mymyc
-A Reusable Test Data Management Solution - We are planning to develop an UI based automated solution with ready-made domain specific business scenarios to generate synthetic test data
+
+<img align="left" src=https://github.com/Musilix/Mymyc/blob/master/frontend/mymic-frontend/src/assets/images/mimic2.svg height="70" width="100" style="padding:0px;margin:0px;">
+<p>Mymyc is a reusable test data management solution, providing a pleasing user experience for those who need to generate synthetic test data for varying business scenarios. It uses an Angular frontend and a python+flask backend to handle requests and generate realistic synthetic data, in a matter of seconds!</p>
+
+
