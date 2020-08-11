@@ -1,0 +1,66 @@
+/* @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; */
+@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@400&familyBungee&family=Bungee+Shade&family=Monoton&family=Rubik:wght@900&display=swap');
+
+table{
+    width: 75vw;
+    margin:55px 10px;
+}
+
+mat-tab-group{
+    width: 100%;
+}
+
+.mat-tab-label {
+    min-width: 18px !important;
+}
+
+h2{
+    width:100%;
+
+    text-align: center;
+    margin: 0px 0px 0px 0px;
+
+    /* font-family: 'Bungee', cursive; */
+    /* font-family: 'Bungee Shade', cursive; */
+    font-family: 'Monoton', cursive;
+    /* font-family: 'Rubik', sans-serif; */
+
+    font-size: calc(3vw + 3vh);
+    color: #222f3e;
+    text-shadow: 4px 0 0 #feca57, -4px 0 0 #feca57, 0 4px 0 #feca57, 0 -4px 0 #feca57, 3px 3px #feca57, -3px -3px 0 #feca57, 3px -3px 0 #feca57, -3px 3px 0 #feca57;
+}
+
+#table-wrapper{
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#description{
+    color: #fff;
+    font-size: 25px;
+    font-family: 'Overpass';
+
+    padding: 20px;
+}
+
+#temp-flex{
+    width:100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#mimic-logo{
+    /* margin-bottom: -40px; */
+    margin-right: -20px;
+}
+
+#temp-flex img{
+    width: 12vw;
+    height: 12vh;
+}
