@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/pink-bluegrey.css";
+@import '~material-design-icons/iconfont/material-icons.css';
 
 body,html{
     width: 100%;
@@ -20,6 +21,55 @@ app-root{
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.mat-tab-header{
+    margin-bottom: 100px !important;
+}
+
+.mat-list-base .mat-list-item{
+    height:initial !important;
+}
+
+ .mat-list-base .mat-list-item .mat-list-item-content{
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+}
+
+.mat-list-base .mat-subheader{
+    font-size: 18px;
+}
+
+.mat-list-base .mat-list-item .mat-line{
+    word-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+.mat-list-base {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.mat-tab{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.mat-divider{
+    width: 50%;
+}
+
+.list-obj-wrapper{
+    width: 50%;
+    overflow: auto;
+    word-wrap: normal !important;
+    margin: 10px 0px;
 }
 
 

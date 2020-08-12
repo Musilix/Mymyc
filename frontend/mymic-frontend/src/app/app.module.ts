@@ -8,8 +8,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatListModule} from '@angular/material/list';
+import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatPaginatorModule } from '@angular/material/paginator';
+
+import {MatIconModule} from '@angular/material/icon';
 
 import { FormsModule } from '@angular/forms';
 
@@ -24,6 +28,9 @@ import { FormsModule } from '@angular/forms';
     MatTableModule,
     MatTabsModule,
     MatRadioModule,
+    MatListModule,
+    MatButtonModule,
+    MatIconModule,
     MatCheckboxModule,
     MatPaginatorModule,
     FormsModule

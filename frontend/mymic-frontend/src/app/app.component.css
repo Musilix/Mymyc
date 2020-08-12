@@ -1,5 +1,6 @@
 /* @import "~@angular/material/prebuilt-themes/deeppurple-amber.css"; */
-@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@400&familyBungee&family=Bungee+Shade&family=Monoton&family=Rubik:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 table{
     width: 75vw;
@@ -34,14 +35,17 @@ h2{
     width: 100%;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 #description{
-    color: #fff;
+    color: rgba(0, 0, 0, 0.54);
     font-size: 25px;
-    font-family: 'Overpass';
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: light;
 
     padding: 20px;
 }

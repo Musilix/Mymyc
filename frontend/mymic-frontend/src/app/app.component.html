@@ -53,6 +53,8 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
+        <button mat-button color="primary">Generate Data</button>
+
       </div>
     </mat-tab>
 
@@ -60,8 +62,52 @@
       <div id="description">Mymyc is an Angular project, propped up with a Python backend which handles all data generation.</div>
     </mat-tab>
 
-    <mat-tab label="Members">
+    <mat-tab label="Members" id="members">
+      <mat-list>
 
+        <div class="list-obj-wrapper">
+          <div mat-subheader>Kareem</div>
+          <mat-list-item>
+            <mat-icon mat-list-icon>face</mat-icon>
+            <div mat-line>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in lacus accumsan, pulvinar libero ac, ultricies nibh. Cras pharetra orci quis arcu dapibus bibendum. Vestibulum eget ornare nulla, scelerisque placerat augue. Integer vestibulum finibus odio a maximus. Vivamus placerat ut sem non porta.</div>
+          </mat-list-item>
+        </div>
+
+
+        <mat-divider></mat-divider>
+
+        <div class="list-obj-wrapper">
+          <div mat-subheader>Sujasri</div>
+          <mat-list-item>
+            <mat-icon mat-list-icon>face</mat-icon>
+            <div mat-line>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in lacus accumsan, pulvinar libero ac, ultricies nibh. Cras pharetra orci quis arcu dapibus bibendum. Vestibulum eget ornare nulla, scelerisque placerat augue. Integer vestibulum finibus odio a maximus. Vivamus placerat ut sem non porta.</div>
+          </mat-list-item>
+        </div>
+
+
+        <mat-divider></mat-divider>
+
+        <div class="list-obj-wrapper">
+          <div mat-subheader>Kishore</div>
+          <mat-list-item>
+            <mat-icon mat-list-icon>face</mat-icon>
+            <div mat-line>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in lacus accumsan, pulvinar libero ac, ultricies nibh. Cras pharetra orci quis arcu dapibus bibendum. Vestibulum eget ornare nulla, scelerisque placerat augue. Integer vestibulum finibus odio a maximus. Vivamus placerat ut sem non porta.</div>
+          </mat-list-item>
+        </div>
+
+
+        <mat-divider></mat-divider>
+
+        <div class="list-obj-wrapper">
+          <div mat-subheader>Balaji</div>
+          <mat-list-item>
+            <mat-icon mat-list-icon>face</mat-icon>
+            <div mat-line>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam in lacus accumsan, pulvinar libero ac, ultricies nibh. Cras pharetra orci quis arcu dapibus bibendum. Vestibulum eget ornare nulla, scelerisque placerat augue. Integer vestibulum finibus odio a maximus. Vivamus placerat ut sem non porta.</div>
+          </mat-list-item>
+        </div>
+
+
+      </mat-list>
     </mat-tab>
   </mat-tab-group>
 </div>
