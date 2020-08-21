@@ -4,8 +4,40 @@
 
 table{
     width: 75vw;
-    margin:55px 10px;
 }
+
+.relativeBitch{
+    background-color: inherit;
+    position: relative;
+    z-index: 999;
+}
+
+.stickBitch{
+    position: fixed;
+    width: inherit;
+}
+
+.sticky{
+    text-align: left !important;
+}
+
+#table-wrapper {
+    /* height: 400px; */
+    width: 85%;
+    /* max-width: 100%; */
+    overflow-x: auto;
+    margin:50px 0px !important;
+
+  }
+/*   
+  table {
+    width: 100%;
+  } */
+  
+  td.mat-column-star {
+    width: 20px;
+    padding-right: 8px;
+  }
 
 mat-tab-group{
     width: 100%;
@@ -31,13 +63,13 @@ h2{
     text-shadow: 4px 0 0 #feca57, -4px 0 0 #feca57, 0 4px 0 #feca57, 0 -4px 0 #feca57, 3px 3px #feca57, -3px -3px 0 #feca57, 3px -3px 0 #feca57, -3px 3px 0 #feca57;
 }
 
-#table-wrapper{
-    width: 100%;
+#table-tab-wrapper{
+    width: 100% !important;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 #description{

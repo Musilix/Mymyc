@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/pink-bluegrey.css";
-@import '~material-design-icons/iconfont/material-icons.css';
+@import "~@angular/material/prebuilt-themes/purple-green.css";
+/* @import '~material-design-icons/iconfont/material-icons.css'; */
 
 body,html{
     width: 100%;
@@ -16,6 +16,30 @@ body,html{
     background: #57606f;
 }
 
+html {
+    --scrollbarBG: rgb(66, 66, 66);
+    --thumbBG: #CFD8DC;
+}
+
+#table-wrapper::-webkit-scrollbar {
+    width: 1px;
+    height:12px;
+}
+
+#table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+
+#table-wrapper::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+}
+
+#table-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 8px;
+    border: 3px solid var(--scrollbarBG);
+}
 
 app-root{
     width: 100%;
@@ -23,8 +47,33 @@ app-root{
     justify-content: center;
 }
 
-.mat-tab-header{
-    margin-bottom: 100px !important;
+.mat-table{
+    overflow: hidden;
+    border-radius: 5px;
+    /* min-width: 450px; */
+}
+
+
+.mat-row,
+.mat-header-row {
+    /* display: table-row; */
+    min-width:100px !important;
+    height: 50px;
+    /* text-align: center !important; */
+    padding: 5px 25px !important;
+}
+
+.mat-cell,
+.mat-header-cell {
+    min-width:150px !important;
+    height: 30px !important;
+    padding: 25px !important;
+
+    text-align: center !important;
+}
+
+.test{
+    text-align: left !important;
 }
 
 .mat-list-base .mat-list-item{
