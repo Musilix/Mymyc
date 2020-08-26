@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/purple-green.css";
+@import './app/scenario-table/scenario-table.component.css';
+/* @import '~material-design-icons/iconfont/material-icons.css'; */
+
 /* @import '~material-design-icons/iconfont/material-icons.css'; */
 
 body,html{
@@ -47,12 +50,15 @@ app-root{
     justify-content: center;
 }
 
+.mat-form-field-infix{
+    border:0px;
+}
+
 .mat-table{
-    overflow: hidden;
+    /* overflow: hidden; */
     border-radius: 5px;
     /* min-width: 450px; */
 }
-
 
 .mat-row,
 .mat-header-row {
@@ -108,7 +114,9 @@ app-root{
     align-items: center;
 }
 
-
+.mat-tab-body{
+    padding: 50px 0px !important;
+}
 
 .mat-divider{
     width: 50%;

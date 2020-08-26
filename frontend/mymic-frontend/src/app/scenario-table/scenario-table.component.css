@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+table{
+    width: 75vw;
+}
+
+#form-junk{
+    width: 85% !important;
+    display: flex !important; 
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+#form-junk #user-specified-data{
+    margin: 0px 10px !important;
+}
+
+.mat-button{
+    margin: 0px 10px !important;
+}
+
+.sticky{
+    text-align: left !important;
+}
+
+#table-wrapper {
+    /* height: 400px; */
+    width: 85%;
+    /* max-width: 100%; */
+    overflow-x: auto;
+    margin:50px 0px !important;
+
+  }
+/*   
+  table {
+    width: 100%;
+  } */
+  
+  td.mat-column-star {
+    width: 20px;
+    padding-right: 8px;
+  }
+
+mat-tab-group{
+    width: 100%;
+}
+
+.mat-tab-label {
+    /* min-width: 18px !important; */
+}
+
+#nested-tab-holder{
+    background:none !important;
+    border:none !important;
+    padding:0px !important;
+
+    color: #e3e5e7 !important;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#nested-tab-holder:hover{
+    cursor: pointer;
+}
+
+h2{
+    width:100%;
+
+    text-align: center;
+    margin: 0px 0px 0px 0px;
+
+    /* font-family: 'Bungee', cursive; */
+    /* font-family: 'Bungee Shade', cursive; */
+    font-family: 'Monoton', cursive;
+    /* font-family: 'Rubik', sans-serif; */
+
+    font-size: calc(3vw + 3vh);
+    color: #222f3e;
+    text-shadow: 4px 0 0 #feca57, -4px 0 0 #feca57, 0 4px 0 #feca57, 0 -4px 0 #feca57, 3px 3px #feca57, -3px -3px 0 #feca57, 3px -3px 0 #feca57, -3px 3px 0 #feca57;
+}
+
+#table-tab-wrapper{
+    width: 100% !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+#description-wrapper{
+    width: 100% !important;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#description{
+    height: 100%;
+    width: 40%;
+
+    color: rgb(227,229,231);
+    font-size: 18px;
+    line-height: 1.5;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: light;
+
+    padding: 50px;
+    background: #424242;
+    border-radius: 5px;
+}
+
+#temp-flex{
+    width:100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#mimic-logo{
+    /* margin-bottom: -40px; */
+    margin-right: -20px;
+}
+
+#temp-flex img{
+    width: 12vw;
+    height: 12vh;
+}

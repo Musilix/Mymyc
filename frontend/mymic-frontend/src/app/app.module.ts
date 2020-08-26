@@ -12,15 +12,21 @@ import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import {MatInputModule} from '@angular/material/input';
+import {MatMenuModule} from '@angular/material/menu';
 
 import {MatIconModule} from '@angular/material/icon';
 
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ScenarioTableComponent } from './scenario-table/scenario-table.component';
+// import { ScenarioFieldComponent } from './scenario-field/scenario-field.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ScenarioTableComponent,
+    // ScenarioFieldComponent
   ],
   imports: [
     BrowserModule,
@@ -28,9 +34,11 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatTableModule,
+    MatInputModule,
     MatTabsModule,
     MatRadioModule,
     MatListModule,
+    MatMenuModule,
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
