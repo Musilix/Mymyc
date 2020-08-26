@@ -26,6 +26,7 @@ def handleData():
     # will loop thru the activated scenarios in the future, but for now, lets just extract the single Scenario being sent
     scenario_details = activated_rows[0][1]
 
+    scenario_file_name = (scenario_details["Scenario"]["fieldValue"]).replace(" ", "_") + "_Test_Data"
     # in the future we will analyze each field, and if its true, we will handle data generation for it... not sure how yet
     # but for now, we will just check for gender and fName + lName
     isGender = scenario_details["Gender"]["fieldValue"]
@@ -58,11 +59,13 @@ def handleData():
 
         scenario_df[column] = generated_col_data
 
-    # print(scenario_df)
-
     resp = make_response(scenario_df.to_csv(index=False)) # use flask make_response method, alongside pandas to_csv method
-    resp.headers["Content-Disposition"] = "attachment; filename = test.csv"
+    resp.headers['Access-Control-Allow-Headers'] = 'content-type, content-disposition'
+    resp.headers['Access-Control-Allow-Methods'] = 'POST'
+    resp.headers['Access-Control-Expose-Headers'] = 'Content-Disposition'
+
     resp.headers["Content-Type"] = "text/csv"
+    resp.headers["Content-Disposition"] = scenario_file_name
 
     return resp
 
@@ -76,9 +79,10 @@ def generate_col_data(column_name):
     # print(column_name)
     if(column_name == "Gender"):
         return generate_gender()
+    if(column_name == "firstName" or column_name == "lastName"):
+        return generate_name()
     else:
         return None
-
 
 # we can have a base function which checks the col we need to generate data for...
 # then go on to call a helper method like this to generate tha actual data?
@@ -88,6 +92,13 @@ def generate_gender():
         return "M"
     else:
         return "F"
+
+def generate_name():
+    random_chance = random.uniform(0,1)
+    if(random_chance <= .5):
+        return "Tom"
+    else:
+        return "Bob"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5000', debug="True") #need to set host to 0,0,0,0 so it is externally visible... def might need to change in future

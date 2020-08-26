@@ -64,18 +64,20 @@ export class ScenarioTableComponent implements OnInit {
 
     //jesus fucking christ... all this time I had to set the responseType to blob... or arraybuffer! It was opting to JSON
     //and in turn having many parsin errors from the stuff i was sending back from the Flask server... jeez, good to know for the future.
-    this.http.post('http://127.0.0.1:5000/api/test-send', { rows: JSON.parse(rowData), amt: amt}, { responseType: 'arraybuffer' }).subscribe(response => {
-      this.downLoadFile(response, "text/csv")
+    this.http.post('http://127.0.0.1:5000/api/test-send', { rows: JSON.parse(rowData), amt: amt}, { responseType: 'blob', observe: 'response'}).subscribe(response => {
+      let fileName = response.headers.get('Content-Disposition');
+      this.downLoadFile(response.body, fileName, "text/csv")
       console.log("Sending data to server...");
     })
   }
 
-  downLoadFile(data: any, type: string) {
+  downLoadFile(data: any, fileName: string, type: string) {
     let blob = new Blob([data], { type: type });
 
     let a = window.document.createElement("a");
     a.href = window.URL.createObjectURL(blob);
-    a.download = "test.csv";
+    a.download = fileName + ".csv";
+
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
