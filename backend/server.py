@@ -21,7 +21,7 @@ def index():
 @app.route('/api/test-send', methods=["POST"])
 @cross_origin(supports_credentials=True)
 def handleData():
-    specific_amt_data = 10
+    specific_amt_data = int(json.loads(request.data)['amt'])
     activated_rows = json.loads(request.data)['rows']
     # will loop thru the activated scenarios in the future, but for now, lets just extract the single Scenario being sent
     scenario_details = activated_rows[0][1]
@@ -63,7 +63,7 @@ def handleData():
     resp = make_response(scenario_df.to_csv(index=False)) # use flask make_response method, alongside pandas to_csv method
     resp.headers["Content-Disposition"] = "attachment; filename = test.csv"
     resp.headers["Content-Type"] = "text/csv"
-    
+
     return resp
 
 @app.route('/api/generate-test-data', methods=["POST"])

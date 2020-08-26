@@ -56,7 +56,7 @@ export class ScenarioTableComponent implements OnInit {
     }
   }
 
-  testLink(rowData) {
+  testLink(rowData, amt) {
     let requestOptions = {
       responseType: "blob"
     };
@@ -64,7 +64,7 @@ export class ScenarioTableComponent implements OnInit {
 
     //jesus fucking christ... all this time I had to set the responseType to blob... or arraybuffer! It was opting to JSON
     //and in turn having many parsin errors from the stuff i was sending back from the Flask server... jeez, good to know for the future.
-    this.http.post('http://127.0.0.1:5000/api/test-send', { rows: JSON.parse(rowData) }, { responseType: 'arraybuffer' }).subscribe(response => {
+    this.http.post('http://127.0.0.1:5000/api/test-send', { rows: JSON.parse(rowData), amt: amt}, { responseType: 'arraybuffer' }).subscribe(response => {
       this.downLoadFile(response, "text/csv")
       console.log("Sending data to server...");
     })
@@ -84,7 +84,7 @@ export class ScenarioTableComponent implements OnInit {
   requestData(){
     console.log("Requested rows: " + this.amtOfData);
 
-    this.testLink(this.mapToJson(activatedTableRows));
+    this.testLink(this.mapToJson(activatedTableRows), this.amtOfData);
   }
 
   mapToJson(map){
