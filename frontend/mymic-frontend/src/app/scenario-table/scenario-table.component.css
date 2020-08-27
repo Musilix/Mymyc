@@ -99,7 +99,7 @@ h2{
 
     font-size: calc(3vw + 3vh);
     color: #222f3e;
-    text-shadow: 4px 0 0 #feca57, -4px 0 0 #feca57, 0 4px 0 #feca57, 0 -4px 0 #feca57, 3px 3px #feca57, -3px -3px 0 #feca57, 3px -3px 0 #feca57, -3px 3px 0 #feca57;
+    text-shadow: 4px 0 0 #cfd8dc, -4px 0 0 #cfd8dc, 0 4px 0 #cfd8dc, 0 -4px 0 #cfd8dc, 3px 3px #cfd8dc, -3px -3px 0 #cfd8dc, 3px -3px 0 #cfd8dc, -3px 3px 0 #cfd8dc;
 }
 
 #table-tab-wrapper{

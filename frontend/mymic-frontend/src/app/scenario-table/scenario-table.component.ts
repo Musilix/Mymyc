@@ -66,17 +66,28 @@ export class ScenarioTableComponent implements OnInit {
     //and in turn having many parsin errors from the stuff i was sending back from the Flask server... jeez, good to know for the future.
     this.http.post('http://127.0.0.1:5000/api/test-send', { rows: JSON.parse(rowData), amt: amt}, { responseType: 'blob', observe: 'response'}).subscribe(response => {
       let fileName = response.headers.get('Content-Disposition');
-      this.downLoadFile(response.body, fileName, "text/csv")
+      let x = response.headers.get("Type-Stream")
+
+      if (x == "zip"){
+        this.downLoadFile(response.body,"Scenarios", "application/zip", "zip");
+      }else{
+        console.log(x)
+        this.downLoadFile(response.body, fileName, "text/csv", "csv")
+      }
       console.log("Sending data to server...");
     })
   }
 
-  downLoadFile(data: any, fileName: string, type: string) {
+  downLoadFile(data: any, fileName: string, type: string, extension : string) {
     let blob = new Blob([data], { type: type });
 
     let a = window.document.createElement("a");
     a.href = window.URL.createObjectURL(blob);
-    a.download = fileName + ".csv";
+    if(extension === "csv"){
+      a.download = fileName + ".csv";
+    }else if(extension === "zip"){
+      a.download = fileName + ".zip";
+    }
 
     document.body.appendChild(a);
     a.click();
