@@ -16,6 +16,10 @@ __pycache__/
 # C extensions
 *.so
 
+# testing env
+/static_mapping_data
+/testgrounds.py
+
 # Distribution / packaging
 .Python
 build/

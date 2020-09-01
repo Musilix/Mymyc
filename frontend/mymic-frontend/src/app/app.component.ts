@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -9,29 +10,45 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'mymic-frontend';
 
-  isHome = false;
-  isAuto = false;
-  isLife = false;
+  toggle = false;
+
+  isHealthcare = false;
+  isInsurance = false;
+  isBanking = false;
+
+  constructor(private http : HttpClient){}
+
+  handleToggle(event ?: MatTabChangeEvent){
+    if(event){
+      let toggledTab = event.tab.textLabel
+      if(toggledTab != "Generate"){
+        this.toggleHelp();
+      }
+    }else{
+      this.toggleHelp();
+    }
+  }
+
+  toggleHelp(){
+    if(!this.toggle){
+      this.toggle = true;
+    }
+  }
 
   changeDomain(domainIndex){
-    console.log("domain chosen");
-    console.log("domain index: " + domainIndex);
-    console.log("domain index type: " + typeof domainIndex);
-    console.log("-----------");
-    
     if(domainIndex === 0){
       // console.log("Home");
-      this.isHome = false;
-      this.isAuto = false;
-      this.isLife = true;
+      this.isHealthcare = false;
+      this.isInsurance = false;
+      this.isBanking = true;
     }else if(domainIndex === 1){
-      this.isHome = true;
-      this.isAuto = false;
-      this.isLife = false;
+      this.isHealthcare = true;
+      this.isInsurance = false;
+      this.isBanking = false;
     }else if(domainIndex === 2){
-      this.isHome = false;
-      this.isAuto = true;
-      this.isLife = false;
+      this.isHealthcare = false;
+      this.isInsurance = true;
+      this.isBanking = false;
     }
   }
 }

@@ -8,11 +8,12 @@
 body,html{
     width: 100%;
     height: 100%;
+    /* height: auto; this was causing wacko issues for some reason... */
 
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
     
     margin:0px;
     padding:0px;
@@ -26,6 +27,7 @@ html {
 
 app-root{
     width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
 }
@@ -95,7 +97,15 @@ app-root{
 }
 
 .mat-tab-body{
-    padding: 50px 0px !important;
+    padding: 25px 0px !important;
+}
+
+.mat-paginator{
+    position: sticky;
+    left: 0;
+    /* bottom: 0; */
+    /* width: inherit; */
+
 }
 
 .mat-divider{
@@ -109,4 +119,22 @@ app-root{
     margin: 10px 0px;
 }
 
+th.mat-header-cell{
+    font-size:14px;
+}
 
+.tab-opened{
+    margin:25px 0px 0px 0px !important;
+}
+
+.tab-opened-hide{
+    display:none !important;
+}
+
+.tab-opened-shrink{
+    font-size: calc((.75vw + 6.5vh) / 2) !important;
+}
+
+.tab-opened-decenter{
+    height: fit-content !important;
+}

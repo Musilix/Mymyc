@@ -1,31 +1,35 @@
-<div id="temp-flex">
-  <!-- <img id="mimic-logo" src="../assets/images/mimic2.svg" alt="mimicky"> -->
-  <h2>mymyc</h2>
 
-  <mat-tab-group dynamicHeight="true" mat-align-tabs="center" animationDuration="1000ms" selectedIndex=0>
+<div [ngClass] = "{'tab-opened-decenter' : toggle}" id="temp-flex">
+  <!-- <img id="mimic-logo" src="../assets/images/mimic2.svg" alt="mimicky"> -->
+  <div [ngClass] = "{'tab-opened' : toggle}"id="header-wrap">
+    <h2 [ngClass] = "{'tab-opened-shrink' : toggle}">mymyc</h2>
+    <p [ngClass] = "{'tab-opened-hide' : toggle}">created by DataGenix</p>
+  </div>
+
+  <mat-tab-group (selectedTabChange)="handleToggle($event)" dynamicHeight="true" mat-align-tabs="center" animationDuration="1000ms" selectedIndex=0>
     <mat-tab label="Generate">
       <ng-template mat-tab-label>
         <button [matMenuTriggerFor]="Menu" id="nested-tab-holder">Generate</button>
       </ng-template>
 
       <mat-menu #Menu="matMenu">
-          <button (click)="changeDomain(0)" mat-menu-item>Home</button>
-          <button (click)="changeDomain(1)" mat-menu-item>Life</button>
-          <button (click)="changeDomain(2)" mat-menu-item>Auto</button>
+          <button (click)="changeDomain(0); handleToggle()" mat-menu-item>Banking</button>
+          <button (click)="changeDomain(1); handleToggle()" mat-menu-item>Healthcare</button>
+          <button (click)="changeDomain(2); handleToggle()" mat-menu-item>Insurance</button>
       </mat-menu>
       
-      <ng-template [ngIf]="isLife">
-        <app-scenario-table></app-scenario-table>
+      <ng-template [ngIf]="isBanking">
+        <app-scenario-table domain = "Banking"></app-scenario-table>
       </ng-template>
-      <ng-template [ngIf]="isHome">
-        <app-scenario-table></app-scenario-table>
+      <ng-template [ngIf]="isHealthcare">
+        <app-scenario-table domain = "Healthcare"></app-scenario-table>
       </ng-template>
-      <ng-template [ngIf]="isAuto">
-        <app-scenario-table></app-scenario-table>
+      <ng-template [ngIf]="isInsurance">
+        <app-scenario-table domain = "Insurance"></app-scenario-table>
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="About">
+    <mat-tab label="About" (click)="handleToggle()">
       <div id="description-wrapper">
         <div id="description">
           Mymyc is a reusable test data management solution, providing a pleasing user experience for those who need to generate synthetic test data for varying business scenarios. It uses an Angular frontend and a python + flask backend to handle requests and generate realistic synthetic data, in a matter of seconds!
@@ -33,7 +37,7 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="Members" id="members">
+    <mat-tab label="Members" id="members" (click)="handleToggle()">
       <mat-list>
 
         <div class="list-obj-wrapper">

@@ -1,5 +1,7 @@
+/* could bunch this into one import but uhhhh that wasnt working... */
 @import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap');
 
 table{
     width: 75vw;
@@ -27,7 +29,7 @@ table{
 
 #table-wrapper {
     /* height: 400px; */
-    width: 85%;
+    width: 95%;
     /* max-width: 100%; */
     overflow-x: auto;
     margin:0px 0px 50px 0px !important;
@@ -86,7 +88,17 @@ mat-tab-group{
     cursor: pointer;
 }
 
-h2{
+#header-wrap{
+    margin:25px 0px;
+    padding:0px;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+}
+
+#header-wrap h2{
     width:100%;
 
     text-align: center;
@@ -97,9 +109,22 @@ h2{
     font-family: 'Monoton', cursive;
     /* font-family: 'Rubik', sans-serif; */
 
-    font-size: calc(3vw + 3vh);
+    font-size: calc(.75vw + 6.5vh);
     color: #222f3e;
     text-shadow: 4px 0 0 #cfd8dc, -4px 0 0 #cfd8dc, 0 4px 0 #cfd8dc, 0 -4px 0 #cfd8dc, 3px 3px #cfd8dc, -3px -3px 0 #cfd8dc, 3px -3px 0 #cfd8dc, -3px 3px 0 #cfd8dc;
+}
+
+#header-wrap p{
+    font-weight: 300;
+    margin:calc(-1 * 1.5vh + -1 * .25vw) 0px 0px 0px; /*lets obsfucate the fuck out of font sizings*/
+    padding:0;
+
+    font-family: 'Roboto Mono', monospace;
+
+    
+    font-size: calc(.2vw + 1.5vh);
+    color: #cfd8dc;
+    /* text-shadow: .5px 0 0 #cfd8dc, -.5px 0 0 #cfd8dc, 0 .5px 0 #cfd8dc, 0 -.5px 0 #cfd8dc, .25px .25px #cfd8dc, -.25px -.25px 0 #cfd8dc, .25px -.25px 0 #cfd8dc, -.25px .25px 0 #cfd8dc; */
 }
 
 #table-tab-wrapper{
@@ -138,6 +163,7 @@ h2{
 
 #temp-flex{
     width:100%;
+    height: inherit;
 
     display: flex;
     flex-direction: column;

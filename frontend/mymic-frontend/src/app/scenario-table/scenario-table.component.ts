@@ -1,24 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders  } from '@angular/common/http';
-import { Scenario } from '.././scenario';
+// import { Scenario } from '.././scenario';
+import { BankingScenarioSource } from '../banking-scenario-source';
+import { BankingScenario } from '../banking-scenario';
 import { ScenarioField } from '.././scenario-field';
-
-var iterator = 0;
-var dormantTableRows = new Map<number, Scenario>();
-var activatedTableRows = new Map<number, Scenario>();
-const ELEMENT_DATA: Scenario[] = [
-  new Scenario({Scenario: new ScenarioField({fieldValue: "Personal Auto"}), Gender:new ScenarioField({fieldValue: true, required:true})}),
-  new Scenario({Scenario: new ScenarioField({fieldValue: "New Business"}), Gender:new ScenarioField({fieldValue: true, required:true}), DOB: new ScenarioField({fieldValue: true, required: true}), Address: new ScenarioField({fieldValue: true, required: true})}),
-  new Scenario({Scenario: new ScenarioField({fieldValue: "Endorsement in the same new business"})}),
-  new Scenario({Scenario: new ScenarioField({fieldValue: "Renewal of an existing policy"})}),
-  new Scenario({Scenario: new ScenarioField({fieldValue: "Flat Cancellation"})})
-];
-
-//initialize our dormant table with the scenarios... if one row is chosen, we use the id associated with it to put it in our activated table
-ELEMENT_DATA.forEach((scenario: Scenario) => {
-  dormantTableRows.set(iterator, scenario);
-  iterator++;
-});
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource} from '@angular/material/table';
 
 @Component({
   selector: 'app-scenario-table',
@@ -27,36 +14,37 @@ ELEMENT_DATA.forEach((scenario: Scenario) => {
 })
 export class ScenarioTableComponent implements OnInit {
 
-  
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef){}
 
+  @Input()
+  domain : string;
+  amtOfData : number = 1; //implicitly generate 1 data by default
 
-  amtOfData = 1; //implicitly generate 1 data by default
-  definedColumns: string[] = ['Scenario', 'Gender', 'Address', 'DOB', 'firstName', 'lastName', 'Spouse_First_Name', 'Spouse_Last_Name', 'Spouse_DOB', 'Street_Address', 'Apt', 'City', 'County', 'Zip', 'State', 'Rent_or_Own', 'Email_Address', 'Primary_Phone', 'Secondary_Phone', 'Date_of_Purchase', 'Make', 'Model', 'Finance'];
-  dataSource = ELEMENT_DATA;
-  activeRows = activatedTableRows;
+  // change type to general Scenario type, which each domain class implments - with general methods like get, set, etc...
+  scenarioDataSource; //change this to check domain and use proper domain class obj
+  definedColumns : string[];
+  activeRows : Map<number, any>;
+  dataSource : MatTableDataSource<any> = new MatTableDataSource();
+  @ViewChild(MatPaginator) paginator : MatPaginator;
 
-  // downloadTesting(){
-  //   var FileSaver = require('file-saver');
-  //   var blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
-  //   FileSaver.saveAs(blob, "hello world.txt");
-  // }
-
-  updateRowField(field, fieldVal, fieldLoc){
-    let updatedFieldVal = !fieldVal;
-    this.dataSource[fieldLoc][field] = updatedFieldVal;
-  }
-
-  testChange(index){
+  activateRow(index){
+    let activatedTableRows = this.scenarioDataSource.getActiveRows();
+    let dormantTableRows = this.scenarioDataSource.getDormantRows();
     if(activatedTableRows.get(index)){
       activatedTableRows.delete(index);
     }else{
       let activatedScenario = dormantTableRows.get(index)
-      activatedTableRows.set(index, activatedScenario);
+      this.scenarioDataSource.setActiveRows(index, activatedScenario);
+      // activatedTableRows.set(index, activatedScenario);
     }
   }
 
-  testLink(rowData, amt) {
+  requestData(){
+    let activatedTableRows = this.scenarioDataSource.getActiveRows();
+    this.sendData(this.mapToJson(activatedTableRows), this.amtOfData);
+  }
+
+  sendData(rowData, amt) {
     let requestOptions = {
       responseType: "blob"
     };
@@ -71,7 +59,6 @@ export class ScenarioTableComponent implements OnInit {
       if (x == "zip"){
         this.downLoadFile(response.body,"Scenarios", "application/zip", "zip");
       }else{
-        console.log(x)
         this.downLoadFile(response.body, fileName, "text/csv", "csv")
       }
       console.log("Sending data to server...");
@@ -94,17 +81,23 @@ export class ScenarioTableComponent implements OnInit {
     document.body.removeChild(a);
   }
 
-  requestData(){
-    console.log("Requested rows: " + this.amtOfData);
-
-    this.testLink(this.mapToJson(activatedTableRows), this.amtOfData);
-  }
-
   mapToJson(map){
     return JSON.stringify(Array.from(map.entries()));
   }
 
   ngOnInit(): void {
+    // console.log(this.domain == "Banking");
+    this.scenarioDataSource = (this.domain == "Banking") ? new BankingScenarioSource() : null;
   }
 
+  // whoa! this worked now?! It didnt before... maybe because I didnt have that viewChild paginator value connected to
+  // the mattabledatasource value? Idk... but this works now!
+  ngAfterViewInit(){
+    this.dataSource.paginator = this.paginator
+    this.dataSource.data = this.scenarioDataSource.getDataSource();
+    this.activeRows = this.scenarioDataSource.getActiveRows();
+    this.definedColumns = this.scenarioDataSource.getDefinedCols();
+
+    this.cdr.detectChanges();
+  }
 }

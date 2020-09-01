@@ -20,13 +20,11 @@ import {MatIconModule} from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ScenarioTableComponent } from './scenario-table/scenario-table.component';
-// import { ScenarioFieldComponent } from './scenario-field/scenario-field.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ScenarioTableComponent,
-    // ScenarioFieldComponent
+    ScenarioTableComponent
   ],
   imports: [
     BrowserModule,
@@ -40,9 +38,9 @@ import { ScenarioTableComponent } from './scenario-table/scenario-table.componen
     MatListModule,
     MatMenuModule,
     MatButtonModule,
+    MatPaginatorModule,
     MatIconModule,
     MatCheckboxModule,
-    MatPaginatorModule,
     FormsModule
   ],
   providers: [],
