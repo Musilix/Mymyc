@@ -14,7 +14,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import {MatInputModule} from '@angular/material/input';
 import {MatMenuModule} from '@angular/material/menu';
-
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatIconModule} from '@angular/material/icon';
 
 import { FormsModule } from '@angular/forms';
@@ -41,6 +41,7 @@ import { ScenarioTableComponent } from './scenario-table/scenario-table.componen
     MatPaginatorModule,
     MatIconModule,
     MatCheckboxModule,
+    MatProgressBarModule,
     FormsModule
   ],
   providers: [],

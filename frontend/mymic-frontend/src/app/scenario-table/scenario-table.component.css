@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap');
 
 table{
-    width: 75vw;
+    width: 100%;
 }
 
 #form-junk{
@@ -17,14 +17,6 @@ table{
 
 #form-junk #user-specified-data{
     margin: 0px 10px !important;
-}
-
-.mat-button{
-    margin: 0px 10px !important;
-}
-
-.sticky{
-    text-align: left !important;
 }
 
 #table-wrapper {
@@ -127,6 +119,10 @@ mat-tab-group{
     /* text-shadow: .5px 0 0 #cfd8dc, -.5px 0 0 #cfd8dc, 0 .5px 0 #cfd8dc, 0 -.5px 0 #cfd8dc, .25px .25px #cfd8dc, -.25px -.25px 0 #cfd8dc, .25px -.25px 0 #cfd8dc, -.25px .25px 0 #cfd8dc; */
 }
 
+#table-tab-wrapper, #description-tab-wrapper,  #members-tab-wrapper{
+    padding: 25px 0px;
+}
+
 #table-tab-wrapper{
     width: 100% !important;
 
@@ -136,7 +132,7 @@ mat-tab-group{
     align-items: center !important;
 }
 
-#description-wrapper{
+#description-tab-wrapper{
     width: 100% !important;
 
     display: flex;

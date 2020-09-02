@@ -10,11 +10,11 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'mymic-frontend';
 
-  toggle = false;
+  toggle : boolean = false;
 
-  isHealthcare = false;
-  isInsurance = false;
-  isBanking = false;
+  isHealthcare : boolean = false;
+  isInsurance : boolean = false;
+  isBanking : boolean = false;
 
   constructor(private http : HttpClient){}
 
@@ -50,5 +50,8 @@ export class AppComponent {
       this.isInsurance = true;
       this.isBanking = false;
     }
+  }
+
+  ngOnInit(){
   }
 }

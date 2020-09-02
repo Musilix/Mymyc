@@ -1,11 +1,17 @@
 import { Component, OnInit, ViewChild, Input, ChangeDetectorRef } from '@angular/core';
-import { HttpClient, HttpHeaders  } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 // import { Scenario } from '.././scenario';
 import { BankingScenarioSource } from '../banking-scenario-source';
 import { BankingScenario } from '../banking-scenario';
+
+import { HealthcareScenario } from '../healthcare-scenario';
+import { HealthcareScenarioSource } from '../healthcare-scenario-source';
+
 import { ScenarioField } from '.././scenario-field';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource} from '@angular/material/table';
+import { ScenarioDomain } from '../ScenarioDomain.enum';
+
 
 @Component({
   selector: 'app-scenario-table',
@@ -18,7 +24,7 @@ export class ScenarioTableComponent implements OnInit {
 
   // find better way to keep track of the varying data options - insurance, health, banking
   // static for banking scenario data sources
-  private BANKING_SCENARIO_DATA: BankingScenario[] = [
+  private BANKING_SCENARIO_DATA : BankingScenario[] = [
       new BankingScenario({Scenario: new ScenarioField({fieldValue: " Open a New Banking Account "})}),
       new BankingScenario({Scenario: new ScenarioField({fieldValue: " Get Customer account details "})}),
       new BankingScenario({Scenario: new ScenarioField({fieldValue: " Get Customer Details "})}),
@@ -123,6 +129,13 @@ export class ScenarioTableComponent implements OnInit {
   // Will there be any way to create these fields without the underscore?
   private bankingDefinedCols : string[] = ['Scenario', 'Account', 'Account_Holder', 'Account_Identifier', 'Account_Number', 'Account_Specific_Service_Agreement', 'Accounting_Transaction_Event', 'Accrual', 'Amortization', 'Amortization_Schedule', 'Bank', 'Bank_Account', 'Bank_Account_Identifier', 'Banking_Product', 'Banking_Service', 'Borrower', 'Borrowing_Capacity', 'Clearing_Bank', 'Collateral', 'Credit_Agreement', 'Date', 'Day_Count_Convention', 'Day_Of_Month', 'Fixed_Interest_Rate', 'Floating_Interest_Rate', 'Full_Amortization', 'Holding', 'Holding_Company', 'Insurance_Company', 'Insurance_Policy', 'Insurance_Service', 'Interest', 'Interest_Payment_Terms', 'Interest_Rate', 'International_Bank_Account_Identifier', 'Investment_Account', 'Investment_Bank', 'Investment_Company', 'Investment_Or_Deposit_Account', 'Investment_Service', 'Jurisdiction', 'Legal_Agent', 'Lender', 'Loan_Or_Credit_Account', 'Managed_Interest_Rate', 'Payment_Service', 'Payroll_Service', 'Policyholder', 'Principal', 'Principal_Repayment_Terms', 'Principal_Underwriter', 'Relationship_Manager', 'Relationship_Qualifier', 'Underwriter', 'Underwriting_Arrangement', 'Unilateral_Contract', 'Variable_Interest_Rate'];
 
+  private HEALTHCARE_SCENARIO_DATA : HealthcareScenario[] = [
+    new HealthcareScenario({Scenario: new ScenarioField({fieldValue: " Open a New Banking Account "})}),
+    new HealthcareScenario({Scenario: new ScenarioField({fieldValue: " Get Customer account details "})}),
+    new HealthcareScenario({Scenario: new ScenarioField({fieldValue: " Get Customer Details "})}),
+  ];
+  private healthcareDefinedCols : string[] = ['Scenario', 'Account', 'Account_Holder', 'Account_Identifier', 'Account_Number'];
+
   @Input()
   domain : string;
   amtOfData : number = 1; //implicitly generate 1 data by default
@@ -193,8 +206,13 @@ export class ScenarioTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.domain == "Banking");
-    this.scenarioDataSource = (this.domain == "Banking") ? new BankingScenarioSource(this.BANKING_SCENARIO_DATA, this.bankingDefinedCols) : null;
+    if(this.domain == "Banking"){
+      this.scenarioDataSource = new BankingScenarioSource(this.BANKING_SCENARIO_DATA, this.bankingDefinedCols);
+    }else if(this.domain == "Healthcare"){
+      this.scenarioDataSource = new HealthcareScenarioSource(this.HEALTHCARE_SCENARIO_DATA, this.healthcareDefinedCols);
+    }else if(this.domain == "Insurance"){
+      this.scenarioDataSource = new BankingScenarioSource(this.BANKING_SCENARIO_DATA, this.bankingDefinedCols);
+    }
   }
 
   // whoa! this worked now?! It didnt before... maybe because I didnt have that viewChild paginator value connected to
@@ -206,8 +224,7 @@ export class ScenarioTableComponent implements OnInit {
     this.activeRows = this.scenarioDataSource.getActiveRows();
     this.definedColumns = this.scenarioDataSource.getDefinedCols();
 
-    console.log("Columns: " + this.definedColumns);
-    console.log("Active Rows: " + this.activeRows);
+    // console.log("Active Rows: " + JSON.stringify(this.activeRows));
 
     this.cdr.detectChanges();
   }

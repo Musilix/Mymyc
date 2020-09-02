@@ -30,6 +30,11 @@ app-root{
     height: 100%;
     display: flex;
     justify-content: center;
+    flex-direction: column;
+}
+
+.mat-progres-bar{
+    height: 8px;
 }
 
 .mat-form-field-infix{
@@ -61,6 +66,14 @@ app-root{
 }
 
 .test{
+    text-align: left !important;
+}
+
+.mat-button{
+    margin: 0px 10px !important;
+}
+
+.sticky{
     text-align: left !important;
 }
 
@@ -97,7 +110,7 @@ app-root{
 }
 
 .mat-tab-body{
-    padding: 25px 0px !important;
+    /* padding: 25px 0px !important; */
 }
 
 .mat-paginator{
@@ -137,4 +150,13 @@ th.mat-header-cell{
 
 .tab-opened-decenter{
     height: fit-content !important;
+}
+
+.isNotLoading{
+    width: 100%;
+    display:block;
+}
+
+.isLoading{
+    display: block;
 }
