@@ -7,11 +7,17 @@ import { BankingScenario } from '../banking-scenario';
 import { HealthcareScenario } from '../healthcare-scenario';
 import { HealthcareScenarioSource } from '../healthcare-scenario-source';
 
+import { InsuranceScenario } from '../insurance-scenario';
+import { InsuranceScenarioSource } from '../insurance-scenario-source';
+
 import { ScenarioField } from '.././scenario-field';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource} from '@angular/material/table';
 import { ScenarioDomain } from '../ScenarioDomain.enum';
 
+import { ScenarioSource } from '../scenario-source';
+
+import { ShareLoadingService } from '../share-loading.service';
 
 @Component({
   selector: 'app-scenario-table',
@@ -20,7 +26,7 @@ import { ScenarioDomain } from '../ScenarioDomain.enum';
 })
 export class ScenarioTableComponent implements OnInit {
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef){}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private loadingService : ShareLoadingService){}
 
   // find better way to keep track of the varying data options - insurance, health, banking
   // static for banking scenario data sources
@@ -134,14 +140,30 @@ export class ScenarioTableComponent implements OnInit {
     new HealthcareScenario({Scenario: new ScenarioField({fieldValue: " Get Customer account details "})}),
     new HealthcareScenario({Scenario: new ScenarioField({fieldValue: " Get Customer Details "})}),
   ];
+
   private healthcareDefinedCols : string[] = ['Scenario', 'Account', 'Account_Holder', 'Account_Identifier', 'Account_Number'];
+
+  private INSURANCE_SCENARIO_DATA : InsuranceScenario[] = [
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "New Business"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Endorsement"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Renewal"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Cancellation"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Reinstatement"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Rewrite"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Out Of Sequence Transaction"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Midterm Endorsement"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "OOS Endorsement Converted Renewal"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Pro-Rate Endorsement For Adding A Vehicle"})}),
+    new InsuranceScenario({Scenario: new ScenarioField({fieldValue: "Pro-Rate Endorsement Deleting A Vehicle"})})
+  ];
+  private insuranceDefinedCols : string[] = ['Scenario', 'Policy_Number', 'Insured_First_Name', 'Insured_Middle_Name', 'Insured_Last_Name', 'Date_Of_Birth', 'Gender', 'Maritial_Status', 'Spouse_First_Name', 'Spouse_Last_Name', 'Spouse_Dob', 'Street_Address', 'Apt', 'City', 'County', 'Zip_Code', 'State', 'Email_Address', 'Primary_Phone', 'Secondary_Phone', 'Date_Of_Purchase', 'Make', 'Model', 'Vin_Number', 'Finance', 'Primary_Usage', 'Ride_Sharing_Program', 'Garage_Address', 'Miles_Driven_Per_Day', 'Days_Driven_In_A_Week', 'Total_Miles_Per_Year', 'Safety_Device', 'Employment_Status', 'Age_While_Taking_License', 'Accident_Or_Violation_In_Past_5_Years', 'Spouse_Employment_Status', 'Spouse_Age_While_Taking_License', 'Primary_Driver', 'Secondary_Driver', 'Bodily_Injured_Liability_Coverage', 'Bodily_Injured_Per_Person', 'Bil_Per_Occurance', 'Property_Damage_Liability_Coverage', 'Property_Damage_Limit_Per_Occurance', 'Collision_Coverage', 'Collision_Deductible', 'Comprehensive_Coverage', 'Comprehensive_Deductible', 'Rental_Reimbursement', 'Rental_Reimbursement_Limit'];
 
   @Input()
   domain : string;
   amtOfData : number = 1; //implicitly generate 1 data by default
 
   // change type to general Scenario type, which each domain class implments - with general methods like get, set, etc...
-  scenarioDataSource; //change this to check domain and use proper domain class obj
+  scenarioDataSource : ScenarioSource; 
   definedColumns : string[];
   activeRows : Map<number, any>;
   dataSource : MatTableDataSource<any> = new MatTableDataSource();
@@ -170,6 +192,8 @@ export class ScenarioTableComponent implements OnInit {
     };
     // const headers = new HttpHeaders().set('Content-Type', 'text/csv; charset=utf-8');
 
+    console.log("Sending data to server...");
+    this.loadingService.changeLoading();
     //jesus fucking christ... all this time I had to set the responseType to blob... or arraybuffer! It was opting to JSON
     //and in turn having many parsin errors from the stuff i was sending back from the Flask server... jeez, good to know for the future.
     this.http.post('http://127.0.0.1:5000/api/test-send', { rows: JSON.parse(rowData), amt: amt}, { responseType: 'blob', observe: 'response'}).subscribe(response => {
@@ -181,7 +205,7 @@ export class ScenarioTableComponent implements OnInit {
       }else{
         this.downLoadFile(response.body, fileName, "text/csv", "csv")
       }
-      console.log("Sending data to server...");
+      this.loadingService.changeLoading();
     })
   }
 
@@ -211,7 +235,7 @@ export class ScenarioTableComponent implements OnInit {
     }else if(this.domain == "Healthcare"){
       this.scenarioDataSource = new HealthcareScenarioSource(this.HEALTHCARE_SCENARIO_DATA, this.healthcareDefinedCols);
     }else if(this.domain == "Insurance"){
-      this.scenarioDataSource = new BankingScenarioSource(this.BANKING_SCENARIO_DATA, this.bankingDefinedCols);
+      this.scenarioDataSource = new InsuranceScenarioSource(this.INSURANCE_SCENARIO_DATA, this.insuranceDefinedCols);
     }
   }
 
@@ -225,7 +249,8 @@ export class ScenarioTableComponent implements OnInit {
     this.definedColumns = this.scenarioDataSource.getDefinedCols();
 
     // console.log("Active Rows: " + JSON.stringify(this.activeRows));
-
+    console.log(this.dataSource.data);
+    console.log(this.definedColumns);
     this.cdr.detectChanges();
   }
 }

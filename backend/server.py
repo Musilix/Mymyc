@@ -39,6 +39,10 @@ location_data_csv = pd.read_csv(location_data_src)
 # keep global ref to size of this location csv
 location_data_size = len(location_data_csv) - 1
 
+cars_data_src = "./static_mapping_data/makes_and_models.csv"
+cars_data_csv = pd.read_csv(cars_data_src)
+cars_data_size = len(cars_data_csv) - 1
+
 @app.route('/api/test-connection')
 @cross_origin(supports_credentials=True)
 def index():
@@ -82,57 +86,8 @@ def extract_data(activated_row):
 
     # in the future we will analyze each field, and if its true, we will handle data generation for it... not sure how yet
     # but for now, we will just check for gender and fName + lName
-
-    # maybe create a mapping in near future
-    isGender = scenario_details["Gender"]["fieldValue"]
-    isAddress = scenario_details["Address"]["fieldValue"]
-    isDOB = scenario_details["DOB"]["fieldValue"]
-    isSpouseFirstName = scenario_details["Spouse_First_Name"]["fieldValue"]
-    isSpouseLastName = scenario_details["Spouse_Last_Name"]["fieldValue"]
-    isSpouseDOB = scenario_details["Spouse_DOB"]["fieldValue"] 
-    isStreetAddress = scenario_details["Street_Address"]["fieldValue"] 
-    isApt = scenario_details["Apt"]["fieldValue"] 
-    isCity = scenario_details["City"]["fieldValue"] 
-    isCounty = scenario_details["County"]["fieldValue"] 
-    isZip = scenario_details["Zip"]["fieldValue"] 
-    isState = scenario_details["State"]["fieldValue"] 
-    isRentOrOwn = scenario_details["Rent_or_Own"]["fieldValue"]
-    isEmailAddress = scenario_details["Email_Address"]["fieldValue"] 
-    isDateOfPurchase = scenario_details["Date_of_Purchase"]["fieldValue"] 
-    isMake = scenario_details["Make"]["fieldValue"] 
-    isModel = scenario_details["Model"]["fieldValue"] 
-    isFinance = scenario_details["Finance"]["fieldValue"]
-    isFirstName = scenario_details["firstName"]["fieldValue"]
-    isLastName = scenario_details["lastName"]["fieldValue"]
-    isPrimary_Phone = scenario_details["Primary_Phone"]["fieldValue"]
-    isSecondary_Phone = scenario_details["Secondary_Phone"]["fieldValue"]
-
-
-    fields = {
-        "firstName": isFirstName,
-        "lastName": isLastName,
-        "Spouse_First_Name": isSpouseFirstName,
-        "Spouse_Last_Name": isSpouseLastName,
-        "Gender": isGender,
-        "DOB": isDOB,
-        "Spouse_DOB": isSpouseDOB,
-        "State": isState,
-        "City": isCity,
-        "County": isCounty,
-        "Zip": isZip,
-        "Address": isAddress,
-        "Street_Address": isStreetAddress,
-        "Apt": isApt,
-        "Rent_or_Own": isRentOrOwn,
-        "Email_Address": isEmailAddress,
-        "Primary_Phone": isPrimary_Phone,
-        "Secondary_Phone": isSecondary_Phone,
-        "Date_of_Purchase": isDateOfPurchase,
-        "Make": isMake,
-        "Model": isModel,
-        "Finance": isFinance,
-        # might need to add more for each field -- this will hold if the curr scenario has the field marked as true... probably a better way to do this
-    }
+    ext_fields = [field for field in scenario_details]
+    fields = {field: scenario_details[field]["fieldValue"] for field in ext_fields if field != "Scenario"}
 
     # these will always be the vals we need for constructing a df for a scenario... the scenarios details, the file name we want, and the fields tru/false vals of the scenarios' 
     return {"details": scenario_details, "file_name": scenario_file_name, "fields": fields}
@@ -198,27 +153,43 @@ def send_data(filesToSend, zipThatBitch):
     return resp
 
 def generate_col_data(column_name, scenario_df, scenario_idx):
-    if(column_name == "Gender"):
+    if(column_name == "Policy_Number"):
+        return generate_pol_num()
+    elif(column_name == "Gender"):
         return generate_gender(scenario_df, scenario_idx)
     # last name, first name, who cares... just generate a real lookin name using prev method...
-    elif(column_name == "firstName" or column_name == "lastName" or column_name == "Spouse_First_Name" or column_name == "Spouse_Last_Name"):
+    elif(column_name == "Insured_First_Name" or column_name == "Insured_Last_Name" or column_name == "Insured_Middle_Name" or column_name == "Spouse_First_Name" or column_name == "Spouse_Last_Name"):
         return generate_name(column_name, scenario_df, scenario_idx)
     elif(column_name == "Primary_Phone" or column_name == "Secondary_Phone"):
         return generate_phone_num()
+    elif(column_name == "Maritial_Status"):
+        return generate_marital_status(scenario_df, scenario_idx)
+    elif(column_name == "Miles_Driven_Per_Day"):
+        return generate_miles_per_day()
+    elif(column_name == "Days_Driven_In_A_Week"):
+        return generate_days_per_week()
+    elif(column_name == "Total_Miles_Per_Year"):
+        return generate_miles_per_yr(scenario_df, scenario_idx)
     # should prob make sure these arent too far apart... :---0 dont wanna get weird
-    elif(column_name == "DOB" or column_name == "Spouse_DOB"):
+    elif(column_name == "DOB" or column_name == "Spouse_Dob" or column_name == "Date_Of_Birth"):
         return generate_DOB()
+    elif(column_name == "Age_While_Taking_License" or column_name == "Spouse_Age_While_Taking_License"):
+        return generate_age_while_take_license(scenario_df, scenario_idx)
+    elif(column_name == "Vin_Number"):
+        return generate_vin()
     elif(column_name == "Address"):
         return generate_address()
     elif(column_name == "Street_Address"):
-        return generate_street_address()
+        return generate_street_address(scenario_df, scenario_idx, False)
+    elif(column_name == "Garage_Address"):
+        return generate_garage_address(scenario_df, scenario_idx)
     elif(column_name == "Apt"):
         return generate_apt()
     elif(column_name == "City"):
         return generate_city(scenario_df, scenario_idx)
     elif(column_name == "County"):
         return generate_county(scenario_df, scenario_idx)
-    elif(column_name == "Zip"):
+    elif(column_name == "Zip" or column_name == "Zip_Code"):
         return generate_zip()
     elif(column_name == "State"):
         return generate_state()
@@ -226,19 +197,62 @@ def generate_col_data(column_name, scenario_df, scenario_idx):
         return generate_rent_or_own()
     elif(column_name == "Email_Address"):
         return generate_email_address(scenario_df, scenario_idx)
-    elif(column_name == "Date_of_Purchase"):
-        return generate_data_of_purch()
+    elif(column_name == "Date_Of_Purchase"):
+        return generate_data_of_purch(scenario_df, scenario_idx)
+    elif(column_name == "Employment_Status" or column_name == "Spouse_Employment_Status"):
+        return generate_emp_status()
+    elif(column_name == "Secondary_Driver"):
+        return generate_secondary_driver()
+    elif(column_name == "Safety_Device"):
+        return generate_safety_dev()
+    elif(column_name == "Primary_Usage"):
+        return generate_prim_usage()
+    elif(column_name == "Ride_Sharing_Program"):
+        return generate_ride_share()
+    elif(column_name == "Accident_Or_Violation_In_Past_5_Years"):
+        return generate_acc_or_vio_past_5_yrs()
+    elif(column_name == "Primary_Driver"):
+        return generate_prim_driver()
+    elif(column_name == "Bodily_Injured_Liability_Coverage"):
+        return generate_bil_cov()
+    elif(column_name == "Property_Damage_Liability_Coverage"):
+        return generate_prop_damage_liab_cov()
+    elif(column_name == "Collision_Coverage"):
+        return generate_coll_cov()
+    elif(column_name == "Comprehensive_Coverage"):
+        return generate_comp_cov()
+    elif(column_name == "Rental_Reimbursement"):
+        return generate_rent_reimb()
     elif(column_name == "Make"):
         return generate_make()
     elif(column_name == "Model"):
-        return generate_model()
+        return generate_model(scenario_df, scenario_idx)
     elif(column_name == "Finance"):
         return generate_finance()
+
+
+    elif(column_name == "Bodily_Injured_Per_Person" or column_name == "Bil_Per_Occurance"):
+        # these come to have vals in the same range, so just bunch them into one
+        return generate_limits_liab_deducts(50000, 500000)
+    elif(column_name == "Property_Damage_Limit_Per_Occurance"):
+        return generate_limits_liab_deducts(50000, 500000)
+    elif(column_name == "Collision_Deductible"):
+        return generate_limits_liab_deducts(10000, 300000)
+    elif(column_name == "Comprehensive_Deductible"):
+        return generate_limits_liab_deducts(100, 5000)
+    elif(column_name == "Rental_Reimbursement_Limit"):
+        return generate_rental_reimb_lim()
     else:
         return None
 
 # we can have a base function which checks the col we need to generate data for...
 # then go on to call a helper method like this to generate tha actual data?
+
+def generate_pol_num():
+    max_size = 10
+    pol_num = "".join([str(random.randint(0,9)) for i in range(0, max_size)]) # trying to find hack so large numbers show up
+
+    return pol_num
 
 # gender... should probably correlate with the name... right? How will I really create that association tho? Im not going in
 # labelling 10k names F or M... hmmm
@@ -267,17 +281,17 @@ def generate_gender(scenario_df, scenario_idx):
 
 ###################### come back when lname csv is made #########################
 def generate_name(column_name, scenario_df, scenario_idx):
-    if(column_name == "firstName" or column_name == "Spouse_First_Name"):
+    if(column_name == "firstName" or column_name == "Insured_First_Name" or column_name == "Spouse_First_Name"):
         fname_rand_idx = random.randint(0, fname_size)
         name = fname_csv["firstname"][fname_rand_idx]
-    elif(column_name == "lastName"):
+    elif(column_name == "lastName" or column_name == "Insured_Last_Name" or column_name == "Insured_Middle_Name"):
         # change this to use lname csv once i generate that...
         lname_rand_idx = random.randint(0, fname_size)
         name = fname_csv["firstname"][lname_rand_idx]
     elif(column_name == "Spouse_Last_Name"):
         spouse_lname = ""
-        if("lastName" in scenario_df):
-            spouse_lname = scenario_df["lastName"][scenario_idx]
+        if("Insured_Last_Name" in scenario_df):
+            spouse_lname = scenario_df["Insured_Last_Name"][scenario_idx]
         else:
             # change this as well to use lname csv once its made
             lname_rand_idx = random.randint(0, fname_size)
@@ -299,9 +313,50 @@ def generate_phone_num():
 
     return dummy_nummy
 
+def generate_marital_status(scenario_df, scenario_idx):
+    marital_statuses = {0: "Married", 1: "Single", 2: "Divorced"}
+    hasSpouse = False
+    if("Spouse_First_Name" in scenario_df or "Spouse_Last_Name" in scenario_df or "Spouse_Dob" in scenario_df):
+        hasSpouse = True
+
+    if(hasSpouse):
+        marital_status = marital_statuses[0]
+    else:
+        marital_idx = random.randint(0, 2)
+        marital_status = marital_statuses[marital_idx]
+
+    return marital_status
+
+def generate_miles_per_day():
+    miles_per_day = random.randint(10, 110)
+    return miles_per_day
+
+def generate_days_per_week():
+    return random.randint(1,7)
+
+def generate_miles_per_yr(scenario_df, scenario_idx):
+    # if miles per day is given, see if days per week is given, to try n give a more precise val for miles per yr
+    # if no days of drivin per week is given, just approximate with miles per day given
+    # if neither, just generate some rando val between 1000-200000
+    if("Miles_Driven_Per_Day" in scenario_df):
+        miles_per_day = scenario_df["Miles_Driven_Per_Day"][scenario_idx]
+        if("Days_Driven_In_A_Week" in scenario_df):
+            days_per_week = scenario_df["Miles_Driven_Per_Day"][scenario_idx]
+            return (miles_per_day * days_per_week) * 52
+        else:
+            return miles_per_day * 365
+    else:
+        return random.randint(1000, 200000)
+
 # this vs street address hmmmmm... probably remove one of em
 def generate_address():
     return "boonky"
+
+def generate_garage_address(scenario_df, scenario_idx):
+    address = generate_street_address(scenario_df, scenario_idx, True)
+    zip_code = generate_zip()
+
+    return address + " - " + zip_code
 
 def generate_DOB():
     # check if isSpouse is true... if so, make the person age 18 or up.
@@ -317,16 +372,69 @@ def generate_DOB():
 
     return str(dummy_date)
 
-# uhhh whats the diff between this and address??? gotta clarify
-def generate_street_address():
-    # need to generate some random word/name/etc plus some suffix, st/dr/blvd/etc
-    return "poop st"
+def generate_age_while_take_license(scenario_df, scenario_idx):
+    # this is kinda the same as... date of purchase?
+    # hmm whats really different here tho?
+    # a person could of gotten a license between when they were born n current day(1-1-2020 in this case)
+    # they also coulda gotten a whole car then(date of purchase...) but they would always have the license before the purchase... so, date of purchase should maybe instead rely on date of license!
+    if("Date_Of_Birth" in scenario_df):
+        dob_yr = scenario_df["Date_Of_Birth"][scenario_idx].split("-")[0]
+        date_of_purch_delta = int(dob_yr) + 18 #get the yr person was born, add 18 yrs, as i dont think theyd have a policy up until they were at least 18
+        
+        stime = datetime.date(date_of_purch_delta, 1, 1)
+        dtime = datetime.date(2020, 1, 1)
 
-# not really sure about this atm... come back in future...
+        time_between_dates = dtime - stime
+        days_between_dates = time_between_dates.days
+        random_number_of_days = random.randrange(days_between_dates)
+
+        dummy_date = stime + datetime.timedelta(days=random_number_of_days)
+
+        return str(int(dummy_date.year) - int(dob_yr))
+    else:
+        rando_date = generate_DOB()
+        rando_yr = rando_date.split("-")[0]
+
+        return str(2020 - int(rando_yr))
+
+def generate_vin():
+    # set up static size of around 11, but this can go up to range to 50!
+    vin_size = 17
+    vin_num = ""
+    for i in range(0, vin_size):
+        num_or_letter = generate_yes_or_no()
+        if(num_or_letter == "Yes"):
+            vin_num += str(random.randint(0, 9))
+        else:
+            vin_num += random.choice(string.ascii_letters).capitalize()
+    
+    return vin_num
+    
+def generate_street_address(scenario_df, scenario_idx, forGarage):
+    address = ""
+
+    address_suffixes = {0: "Ave", 1: "Court", 2: "Blvd", 3: "St", 4: "Dr", 5: "Way", 6: "Sqr", 7: "Pt", 8: "Park", 9: "Ct"}
+    rand_address_suffix = random.randint(0, 9)
+
+    # get house num if apt isnt chosen
+    if("Apt" not in scenario_df or forGarage):
+        add_num = "".join([str(random.randint(0,9)) for i in range(1,random.randint(3,4))])
+        address += (add_num + " ")
+    
+    # get rando county name to fill in for street name... they all look similar anyway. may want to change this in the future
+    random_add_name_idx = random.randint(0, location_data_size)
+    random_add_name = location_data_csv["county_name"][random_add_name_idx]
+    address += random_add_name
+    
+    add_suff = " " + address_suffixes[rand_address_suffix]
+    address += add_suff
+
+    return address
+
 def generate_apt():
-    return "666"
+    apt_num = int("".join([str(random.randint(0,9)) for i in range(0,4)]))
+    return apt_num
 
-# the 3 following methods will coincide and work with each other hopefully...
 def generate_state():
     # state mapping
     state_mapping = {0: 'AK', 1: 'AL', 2: 'AR', 3: 'AZ', 4: 'CA', 5: 'CO', 6: 'CT', 7: 'DE', 8: 'FL', 9: 'GA', 10: 'HI', 11: 'IA', 12: 'ID', 13: 'IL', 14: 'IN', 15: 'KS', 16: 'KY', 17: 'LA', 18: 'MA', 19: 'MD', 20: 'ME', 21: 'MI', 22: 'MN', 23: 'MO', 24: 'MS', 25: 'MT', 26: 'NC', 27: 'ND', 28: 'NE', 29: 'NH', 30: 'NJ', 31: 'NM', 32: 'NV', 33: 'NY', 34: 'OH', 35: 'OK', 36: 'OR', 37: 'PA', 38: 'RI', 39: 'SC', 40: 'SD', 41: 'TN', 42: 'TX', 43: 'UT', 44: 'VA', 45: 'VT', 46: 'WA', 47: 'WI', 48: 'WV', 49: 'WY'}
@@ -427,12 +535,12 @@ def generate_email_address(scenario_df, scenario_idx):
     fName = ""
     lName = ""
 
-    if("lastName" in scenario_df):
+    if("Insured_Last_Name" in scenario_df):
         isLName = True
-        lName = scenario_df["lastName"][scenario_idx]
-    if("firstName" in scenario_df):
+        lName = scenario_df["Insured_Last_Name"][scenario_idx]
+    if("Insured_First_Name" in scenario_df):
         isFName = True
-        fName = scenario_df["firstName"][scenario_idx]
+        fName = scenario_df["Insured_First_Name"][scenario_idx]
 
     if(isFName and isLName):
         email_prefix = fName[0]
@@ -452,16 +560,147 @@ def generate_email_address(scenario_df, scenario_idx):
 
     return email_user + "@" + domains[rand_dom]
 
-def generate_data_of_purch():
-    return "August 21st"
+def generate_data_of_purch(scenario_df, scenario_idx):
+    if("Date_Of_Birth" in scenario_df):
+        #aful way to get yr from date
+        dob_yr = scenario_df["Date_Of_Birth"][scenario_idx].split("-")[0]
+        date_of_purch_delta = int(dob_yr) + 18 #get the yr person was born, add 18 yrs, as i dont think theyd have a policy up until they were at least 18
+    
+        stime = datetime.date(date_of_purch_delta, 1, 1)
+        dtime = datetime.date(2020, 1, 1)
+
+        time_between_dates = dtime - stime
+        days_between_dates = time_between_dates.days
+        random_number_of_days = random.randrange(days_between_dates)
+
+        dummy_date = stime + datetime.timedelta(days=random_number_of_days)
+
+        return str(dummy_date)
+
+    else:
+        return generate_DOB()
+
+def generate_emp_status():
+    # gonna test weight choices with the cool py mod...
+    status = ["Employed", "Unemployed", "Self-Employed"]
+
+    random_status = random.choices(status, weights=(60,10,30), k=1)[0]
+
+    return random_status
+
+def generate_secondary_driver():
+    possible_drivers = ["Cousin", "Spouse", "Parent", "Child", "Grandparent", "Sibling", "None"]
+    driver_weights = (10,35,10,30,5,5,5)
+    random_secondary_driver = random.choices(possible_drivers, weights=driver_weights, k=1)[0]
+
+    return random_secondary_driver
+
+def generate_safety_dev():
+    possible_safe_devs = ['Airbags', 'Antilock brakes', 'Traction control', 'Electronic stability control', 'Safety-belt features', 'Brake assist', 'Forward-collision warning', 'Automatic emergency braking', 'Pedestrian detection', 'Adaptive cruise control', 'Blind-spot warning', 'Rear cross-traffic alert', 'Lane-departure warning', 'Lane-keeping assist', 'Active head restraints', 'Backup camera', 'Tire-pressure monitors', 'Telematics']
+    safe_devs_len = len(possible_safe_devs) - 1
+    rand_amt_of_devices = random.randint(0, safe_devs_len)
+
+    random_safe_devs = []
+    # maybe try n come back to update this, but cant do this rn
+    for i in range(0, random.randint(0, rand_amt_of_devices)):
+        random_safety_dev_idx = random.randint(0, safe_devs_len)
+        if(possible_safe_devs[random_safety_dev_idx] not in random_safe_devs):
+            random_safe_devs.append(possible_safe_devs[random_safety_dev_idx] )
+
+    safety_devs = "None"
+    if(len(random_safe_devs) > 0):
+        safety_devs = ", ".join(random_safe_devs)
+
+    return safety_devs
+
+def generate_prim_usage():
+    # may add dependency on other fields for this... but currently, just randomly choose one
+    possible_prim_usages = ['Commuting to and from work', 'Commuting to school', 'Pleasure', 'Business', 'Farm', 'Artisan']
+    prim_usages_weights = (35,30,5,20,5,5)
+    random_prim_usage = random.choices(possible_prim_usages, weights=prim_usages_weights, k=1)[0]
+
+    return random_prim_usage
+
+def generate_ride_share():
+    return generate_yes_or_no()
+
+def generate_acc_or_vio_past_5_yrs():
+    return generate_yes_or_no()
+
+def generate_prim_driver():
+    return generate_yes_or_no()
+
+def generate_bil_cov():
+    return generate_yes_or_no()
+
+def generate_prop_damage_liab_cov():
+    return generate_yes_or_no()
+
+def generate_coll_cov():
+    return generate_yes_or_no()
+
+def generate_comp_cov():
+    return generate_yes_or_no()
+
+def generate_rent_reimb():
+    return generate_yes_or_no()
 
 def generate_make():
-    return "Nissan"
+    car_makes = {0: 'Acura', 1: 'Aston Martin', 2: 'Audi', 3: 'Bentley', 4: 'BMW', 5: 'Buick', 6: 'Cadillac', 7: 'Chevrolet', 8: 'Chrysler', 9: 'Dodge', 10: 'Ferrari', 11: 'Ford', 12: 'GMC', 13: 'Honda', 14: 'HUMMER', 15: 'Hyundai', 16: 'INFINITI', 17: 'Isuzu', 18: 'Jaguar', 19: 'Jeep', 20: 'Kia', 21: 'Lamborghini', 22: 'Land Rover', 23: 'Lexus', 24: 'Lincoln', 25: 'Lotus', 26: 'Maserati', 27: 'Maybach', 28: 'MAZDA', 29: 'Mercedes-Benz', 30: 'Mercury', 31: 'MINI', 32: 'Mitsubishi', 33: 'Nissan', 34: 'Panoz', 35: 'Pontiac', 36: 'Porsche', 37: 'Rolls-Royce', 38: 'Saab', 39: 'Saturn', 40: 'Scion', 41: 'Subaru', 42: 'Suzuki', 43: 'Toyota', 44: 'Volkswagen', 45: 'Volvo', 46: 'smart', 47: 'Ram', 48: 'FIAT', 49: 'Fisker', 50: 'McLaren', 51: 'Tesla', 52: 'Freightliner', 53: 'SRT', 54: 'Alfa Romeo', 55: 'Daihatsu', 56: 'Eagle', 57: 'Geo', 58: 'Oldsmobile', 59: 'Plymouth', 60: 'Genesis', 61: 'Rivian', 62: 'Daewoo'}
+    makes_len = len(car_makes) - 1
 
-def generate_model():
-    return "Altima"
+    random_make_idx = random.randint(0, makes_len)
+    random_make = car_makes[random_make_idx]
+
+    return random_make
+
+def generate_model(scenario_df, scenario_idx):
+    if("Make" in scenario_df):
+        scenario_make = scenario_df["Make"][scenario_idx]
+        filtered_models = cars_data_csv.loc[cars_data_csv["make"] == scenario_make].reset_index()
+        filtered_models_len = len(filtered_models) - 1
+
+        random_model_idx = random.randint(0, filtered_models_len)
+
+        random_model = filtered_models.loc[random_model_idx]["model"]
+
+        return random_model
+
+    else:
+        random_model_idx = random.randint(0, cars_data_size)
+        random_model = cars_data_csv.loc[random_model_idx]["model"]
+
+        return random_model
 
 def generate_finance():
+    return generate_yes_or_no()
+
+def generate_limits_liab_deducts(lower, upper):
+    # maybe make this value weight based, so it leans more towards one side?
+    lower_range = lower
+    upper_range = upper
+
+    bil = random.randrange(lower_range, upper_range)
+    
+    return "$" + "{:,}".format(bil)
+
+def generate_rental_reimb_lim():
+    rent_reimb_lim = ""
+    low_per_day = 30
+    upper_per_day = 100
+
+    per_day_val = random.randint(low_per_day, upper_per_day)
+    rent_reimb_lim += "$" + str(per_day_val) + "/day, "
+
+    low_total = 900
+    upper_total = 2500
+
+    total_val = random.randint(low_total, upper_total)
+    rent_reimb_lim += "$" + str(total_val) + " max"
+
+    return rent_reimb_lim
+
+def generate_yes_or_no():
     x = random.uniform(0,1)
     if(x <= .5):
         return "Yes"

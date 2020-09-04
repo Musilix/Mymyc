@@ -1,0 +1,139 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "DataLakeProposalCargo",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "offerKey":{
+            "type": "object",
+            "items": {
+                "$ref": "#/definitions/offerKey"
+            }
+        },
+        "version":{
+            "type": "integer",
+            "DSD": "NA"
+        },
+        "offerDocumentRefs": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/offerDocumentRefs"
+            }
+        },
+        "concurencyQuantity":{
+            "type": "integer",
+            "DSD": "NA"
+        },
+        "createUserIdNbr": {
+            "type": "string",
+            "DSD": "222"
+        },
+        "createDateTime":{
+            "type": "string",
+            "format": "date-time",
+            "DSD": "226"
+        },
+        "lastUpdateUserIdNbr": {
+            "type": "string",
+            "DSD": "336"
+        },
+        "lastUpdateDateTime":{
+            "type": "string",
+            "format": "date-time",
+            "DSD": "3109"
+        },
+        "mIsDirty": {
+            "DSD": "NA",
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "offerKey",
+        "offerDocumentRefs",
+        "createDateTime",
+        "createUserIdNbr",
+        "lastUpdateDateTime",
+        "lastUpdateUserIdNbr"
+    ],
+    "definitions": {
+        "offerKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "offerId": {
+                    "type": "string",
+                    "DSD": "9954"
+                },
+                "sourceSystemCode": {
+                    "type": ["string", "null"],
+                    "DSD": "NA"
+                }
+            },
+            "required": [
+                "offerId",
+                "sourceSystemCode"
+            ]
+        },
+        "offerDocumentRefs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "documentRefKey": {
+                    "type": "string",
+                    "DSD": "NA"
+                },
+                "documentTitle": {
+                    "type": "string",
+                    "DSD": "NA"
+                },
+                "documentType": {
+                    "type": "string",
+                    "DSD": "NA"
+                },
+                "lineOfBusinessCode": {
+                    "type": "string",
+                    "DSD": "NA"
+                },
+                "quoteNumber": {
+                    "type": "string",
+                    "DSD": "NA"
+                },
+                "concurencyQuantity": {
+                    "type": "integer",
+                    "DSD": "NA"
+                },
+                "createUserIdNbr": {
+                    "type": "string",
+                    "DSD": "222"
+                },
+                "createDateTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "DSD": "226"
+                },
+                "lastUpdateUserIdNbr": {
+                    "type": "string",
+                    "DSD": "336"
+                },
+                "lastUpdateDateTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "DSD": "3109"
+                },
+                "mIsDirty": {
+                    "type": "boolean",
+                    "DSD": "NA"
+                }
+            },
+            "required": [
+                "documentTitle",
+                "documentRefKey",
+                "documentType",
+                "quoteNumber",
+                "lineOfBusinessCode"
+            ]
+        }
+    }
+}
+
+            

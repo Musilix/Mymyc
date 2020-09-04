@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ShareLoadingService {
-  private isLoading : boolean = false;
+  public isLoading : boolean = false;
 
   constructor() { }
 

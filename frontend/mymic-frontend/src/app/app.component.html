@@ -1,5 +1,5 @@
 
-<div>
+<div *ngIf="isLoading">
   <mat-progress-bar class="example-margin" color = "accent" mode = "indeterminate"></mat-progress-bar>
 </div>
 <div [ngClass] = "{'tab-opened-decenter' : toggle}" id="temp-flex">

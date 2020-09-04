@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { HttpClient } from '@angular/common/http';
 
+import { ShareLoadingService } from '../app/share-loading.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,13 +12,17 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'mymic-frontend';
 
+  isLoading : boolean;
+
   toggle : boolean = false;
 
   isHealthcare : boolean = false;
   isInsurance : boolean = false;
   isBanking : boolean = false;
 
-  constructor(private http : HttpClient){}
+  constructor(private http : HttpClient, private loadingService : ShareLoadingService){
+    this.isLoading = loadingService.isLoading;
+  }
 
   handleToggle(event ?: MatTabChangeEvent){
     if(event){
