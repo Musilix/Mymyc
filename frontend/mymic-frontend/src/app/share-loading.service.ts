@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShareLoadingService {
-  public isLoading : boolean = false;
+  private internalLoadingCheck = new BehaviorSubject(false);
+  isLoading : Observable<boolean> = this.internalLoadingCheck.asObservable();
 
   constructor() { }
 
-  changeLoading(){
-    this.isLoading = !this.isLoading;
-  }
-
-  checkLoading(){
-    return this.isLoading;
+  nextLoadMessage(state : boolean){
+    this.internalLoadingCheck.next(state);
   }
 }

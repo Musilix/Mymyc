@@ -20,9 +20,7 @@ export class AppComponent {
   isInsurance : boolean = false;
   isBanking : boolean = false;
 
-  constructor(private http : HttpClient, private loadingService : ShareLoadingService){
-    this.isLoading = loadingService.isLoading;
-  }
+  constructor(private http : HttpClient, private loadingService : ShareLoadingService){}
 
   handleToggle(event ?: MatTabChangeEvent){
     if(event){
@@ -59,5 +57,6 @@ export class AppComponent {
   }
 
   ngOnInit(){
+    this.loadingService.isLoading.subscribe((loadingStatus) => { this.isLoading = loadingStatus});
   }
 }

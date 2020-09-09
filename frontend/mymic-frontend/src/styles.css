@@ -32,11 +32,10 @@ app-root{
     justify-content: center;
     flex-direction: column;
 }
-
-.mat-progres-bar{
-    height: 8px;
-    display: absolute;
-    top:0;
+.mat-progress-bar{
+    height: 7px !important;
+    position: absolute !important;
+    top: 0 !important;
 }
 
 .mat-form-field-infix{

@@ -29,7 +29,7 @@ letters = string.ascii_lowercase
 fname_data_src = "./static_mapping_data/first_names.csv"
 fname_csv = pd.read_csv(fname_data_src)
 # for some reason, even tho i set the header to first_name, i must reference it with firstname instead... weird
-fname_size = fname_csv["firstname"].size #why not use len()? idk... lets just leave it for now
+fname_size = len(fname_csv) - 1
 
 # either make a csv for lnames or combine the two and edit var names
 
@@ -42,6 +42,18 @@ location_data_size = len(location_data_csv) - 1
 cars_data_src = "./static_mapping_data/makes_and_models.csv"
 cars_data_csv = pd.read_csv(cars_data_src)
 cars_data_size = len(cars_data_csv) - 1
+
+employers_data_src = "./static_mapping_data/employers.csv"
+employers_data_csv = pd.read_csv(employers_data_src)
+employers_data_len = len(employers_data_csv) - 1
+
+bank_names_src = "./static_mapping_data/bank_names.csv"
+bank_names_csv = pd.read_csv(bank_names_src)
+bank_names_len = len(bank_names_csv) - 1
+
+#DE was the only one with no definite delta... as it is every odd numbered years... so we will just make it 3
+license_deltas = {'AR': 1, 'DE': 3, 'AL': 1, 'LA': 1, 'SD': 1, 'WI': 1, 'WA': 1, 'AK': 2, 'AZ': 2, 'CA': 2, 'CO': 2, 'CT': 2, 'DC': 2, 'FL': 2, 'GA': 2, 'HI': 2, 'IA': 2, 'ID': 2, 'IN': 2, 'KS': 2, 'MA': 2, 'MD': 2, 'ME': 2, 'MO': 2, 'MS': 2, 'MT': 2, 'NE': 2, 'NH': 2, 'NJ': 2, 'NV': 2, 'NY': 2, 'OH': 2, 'OR': 2, 'PA': 2, 'SC': 2, 'TX': 2, 'TN': 2, 'RI': 2, 'UT': 2, 'VT': 2, 'VA': 2, 'WV': 2, 'IL': 3, 'KY': 3, 'MI': 3, 'MN': 3, 'NC': 3, 'ND': 3, 'NM': 3, 'OK': 3, 'WY': 3}
+
 
 @app.route('/api/test-connection')
 @cross_origin(supports_credentials=True)
@@ -158,9 +170,9 @@ def generate_col_data(column_name, scenario_df, scenario_idx):
     elif(column_name == "Gender"):
         return generate_gender(scenario_df, scenario_idx)
     # last name, first name, who cares... just generate a real lookin name using prev method...
-    elif(column_name == "Insured_First_Name" or column_name == "Insured_Last_Name" or column_name == "Insured_Middle_Name" or column_name == "Spouse_First_Name" or column_name == "Spouse_Last_Name"):
+    elif(column_name == "Insured_First_Name" or column_name == "Insured_Last_Name" or column_name == "Insured_Middle_Name" or column_name == "Spouse_First_Name" or column_name == "Spouse_Last_Name" or column_name == "First_Name" or column_name == "Last_Name" or column_name == "Physician_Name"):
         return generate_name(column_name, scenario_df, scenario_idx)
-    elif(column_name == "Primary_Phone" or column_name == "Secondary_Phone"):
+    elif(column_name == "Primary_Phone" or column_name == "Secondary_Phone" or column_name == "Phone_Number"):
         return generate_phone_num()
     elif(column_name == "Maritial_Status"):
         return generate_marital_status(scenario_df, scenario_idx)
@@ -191,7 +203,7 @@ def generate_col_data(column_name, scenario_df, scenario_idx):
         return generate_county(scenario_df, scenario_idx)
     elif(column_name == "Zip" or column_name == "Zip_Code"):
         return generate_zip()
-    elif(column_name == "State"):
+    elif(column_name == "State" or column_name == "License_Issue_State" or column_name == "Hospital_Affiliation_State"):
         return generate_state()
     elif(column_name == "Rent_or_Own"):
         return generate_rent_or_own()
@@ -200,7 +212,7 @@ def generate_col_data(column_name, scenario_df, scenario_idx):
     elif(column_name == "Date_Of_Purchase"):
         return generate_data_of_purch(scenario_df, scenario_idx)
     elif(column_name == "Employment_Status" or column_name == "Spouse_Employment_Status"):
-        return generate_emp_status()
+        return generate_emp_status(scenario_df, scenario_idx)
     elif(column_name == "Secondary_Driver"):
         return generate_secondary_driver()
     elif(column_name == "Safety_Device"):
@@ -229,8 +241,6 @@ def generate_col_data(column_name, scenario_df, scenario_idx):
         return generate_model(scenario_df, scenario_idx)
     elif(column_name == "Finance"):
         return generate_finance()
-
-
     elif(column_name == "Bodily_Injured_Per_Person" or column_name == "Bil_Per_Occurance"):
         # these come to have vals in the same range, so just bunch them into one
         return generate_limits_liab_deducts(50000, 500000)
@@ -242,11 +252,591 @@ def generate_col_data(column_name, scenario_df, scenario_idx):
         return generate_limits_liab_deducts(100, 5000)
     elif(column_name == "Rental_Reimbursement_Limit"):
         return generate_rental_reimb_lim()
+    elif(column_name == "SSN"):
+        return generate_ssn()
+    elif(column_name == "Pay_Commissions_To"):
+        return generate_pay_comm_to()
+    elif(column_name == "Speciality_Behavioral"):
+        return generate_behavioral_spec()
+    elif(column_name == "Applying_As"):
+        return generate_apply_as()
+    elif(column_name == "Population_Worked_With"):
+        return generate_pop_worked_with()
+    elif(column_name == "Speciality_Medical"):
+        return generate_med_spec()
+    elif(column_name == "Participating_Association"):
+        return generate_participating_assoc()
+    elif(column_name == "Speciality_Dental"):
+        return generate_dental_spec()
+    elif(column_name == "Policy_ID"):
+        return generate_pol_id()
+    elif(column_name == "Physician_Name"):
+        return generate_phys_name()
+    elif(column_name == "Illness"):
+        return generate_illness()
+    elif(column_name == "CPT_Code"):
+        return generate_cpt_code()
+    elif(column_name == "Amount_To_HSA"):
+        return generate_amt_to_hsa()
+    elif(column_name == "Broker_Bonus"):
+        return generate_broker_bonus()
+    elif(column_name == "Broker_Commission"):
+        return generate_broker_comm()
+    elif(column_name == "Claim_ID"):
+        return generate_claim_id()
+    elif(column_name == "Total_Bill"):
+        return generate_tot_bill()
+    elif(column_name == "Hospital_ID"):
+        return generate_hospital_id()
+    elif(column_name == "Claim_Status"):
+        return generate_claim_status()
+    elif(column_name == "Broker_Number"):
+        return generate_brok_num()
+    elif(column_name == "CAQH_Provider_ID"):
+        return generate_caqh_id()
+    elif(column_name == "NPI_Number"):
+        return generate_npi_num()
+    elif(column_name == "PTAN_Number"):
+        return generate_ptan_num()
+    elif(column_name == "Employer_Name"):
+        return generate_emp_name(scenario_df, scenario_idx)
+    elif(column_name == "Benefits"):
+        return generate_benefits()
+    elif(column_name == "Broker_Status"):
+        return generate_broker_status()
+    elif(column_name == "Plan_Type"):
+        return generate_plan_type()
+    elif(column_name == "Agency_Name"):
+        return generate_agency_name()
+    elif(column_name == "Medicare_Certified_State"):
+        return generate_medicare_state()
+    elif(column_name == "License_Number"):
+        return generate_lic_num()
+    elif(column_name == "License_Issue_Date"):
+        return generate_lic_iss_date(scenario_df, scenario_idx)
+    elif(column_name == "License_Expiry_Date"):
+        return generate_lic_exp_date(scenario_df, scenario_idx)
+
+  # to do
+    elif(column_name == "Date_First_Consulted"):
+        return generate_date_first_consulted()
+    elif(column_name == "Claim_Submission_Date"):
+        return generate_claim_sub_date()
+    elif(column_name == "Claim_Process_Date"):
+        return generate_claim_proc_date()
+    elif(column_name == "Effective_Date"):
+        return generate_eff_date()
+
+
+
+    #BANKING COL HANDLERS
+    elif(column_name == "Account"):
+        return generate_acc()
+    elif(column_name == "Account_Holder"):
+        return generate_acc_holder(scenario_df, scenario_idx)
+    elif(column_name == "Account_Identifier"):
+        return generate_acc_id()
+    
+    #do these 2 have specific format
+    elif(column_name == "Account_Number"):
+        return generate_acc_num()
+    elif(column_name == "Bank_Routing_Number"):
+        return generate_route_num()
+
+    elif(column_name == "Account_Balance"):
+        return generate_acc_bal()
+    elif(column_name == "Account_Specific_Service_Agreement"):
+        return generate_acc_spec_serv_agree()
+    elif(column_name == "Accrual"):
+        return generate_accrual()
+    elif(column_name == "Amortization"):
+        return generate_amor()
+    elif(column_name == "Amortization_Schedule"):
+        return generate_amor_sched()
+    elif(column_name == "Bank"):
+        return generate_bank()
+    elif(column_name == "Bank_Account"):
+        return generate_bank_acc()
+    elif(column_name == "Bank_Account_Identifier"):
+        return generate_bank_acc_id()
+    elif(column_name == "Banking_Product"):
+        return generate_banking_prod()
+    elif(column_name == "Banking_Service"):
+        return generate_banking_serv()
+    elif(column_name == "Borrower"):
+        return generate_borrower(scenario_df, scenario_idx)
+    elif(column_name == "Borrowing_Capacity"):
+        return generate_borrow_cap()
+    elif(column_name == "Clearing_Bank"):
+        return generate_clearing_bank()
+    elif(column_name == "Collateral"):
+        return generate_collateral()
+    elif(column_name == "Credit_Agreement"):
+        return generate_cred_agreemnt()
+    elif(column_name == "Credit_Card_Number"):
+        return generate_cred_card_num()
+    elif(column_name == "Credit_Card_Type"):
+        return generate_cred_card_type()
+
+    elif(column_name == "Credit_Card_Expiry"):
+        return "Blank"
+    elif(column_name == "Credit_Card_Cvv"):
+        return "Blank"
+    elif(column_name == "Check_Number"):
+        return "Blank"
+    elif(column_name == "Check_Dated"):
+        return "Blank"
+    elif(column_name == "Check_Deposited_Date"):
+        return "Blank"
+    elif(column_name == "Check_Deposit_Type"):
+        return "Blank"
+    elif(column_name == "Check_Type"):
+        return "Blank"
+    elif(column_name == "MICR_Code"):
+        return "Blank"
+    elif(column_name == "Date"):
+        return "Blank"
+    elif(column_name == "Time_Stamp"):
+        return "Blank"
+    elif(column_name == "Debit_Card_Number"):
+        return "Blank"
+    elif(column_name == "Debit_Card_Type"):
+        return "Blank"
+    elif(column_name == "Debit_Card_Expiry"):
+        return "Blank"
+    elif(column_name == "Debit_Card_Cvv"):
+        return "Blank"
+    elif(column_name == "Fixed_Interest_Rate"):
+        return "Blank"
+    elif(column_name == "Floating_Interest_Rate"):
+        return "Blank"
+    elif(column_name == "Full_Amortization"):
+        return "Blank"
+    elif(column_name == "Holding"):
+        return "Blank"
+    elif(column_name == "Holding_Company"):
+        return "Blank"
+    elif(column_name == "Insurance_Company"):
+        return "Blank"
+    elif(column_name == "Insurance_Policy"):
+        return "Blank"
+    elif(column_name == "Insurance_Service"):
+        return "Blank"
+    elif(column_name == "Interest"):
+        return "Blank"
+    elif(column_name == "Interest_Payment_Terms"):
+        return "Blank"
+    elif(column_name == "Interest_Rate"):
+        return "Blank"
+    elif(column_name == "International_Bank_Account_Identifier"):
+        return "Blank"
+    elif(column_name == "Investment_Account"):
+        return "Blank"
+    elif(column_name == "Investment_Bank"):
+        return "Blank"
+    elif(column_name == "Investment_Company"):
+        return "Blank"
+    elif(column_name == "Investment_Or_Deposit_Account"):
+        return "Blank"
+    elif(column_name == "Investment_Service"):
+        return "Blank"
+    elif(column_name == "Jurisdiction"):
+        return "Blank"
+    elif(column_name == "Legal_Agent"):
+        return "Blank"
+    elif(column_name == "Lender"):
+        return "Blank"
+    elif(column_name == "Loan_Or_Credit_Account"):
+        return "Blank"
+    elif(column_name == "Managed_Interest_Rate"):
+        return "Blank"
+    elif(column_name == "Payment_Service"):
+        return "Blank"
+    elif(column_name == "Policyholder"):
+        return "Blank"
+    elif(column_name == "Transaction_Type"):
+        return "Blank"
+    elif(column_name == "Transaction_Amount"):
+        return "Blank"
+    elif(column_name == "Transaction_ID"):
+        return "Blank"
+    elif(column_name == "Transaction_Mode"):
+        return "Blank"
+    elif(column_name == "Principal"):
+        return "Blank"
+
     else:
-        return None
+        return "NA - error occurred"
+
+#need to prob abstract out the process of choosing a random val from a map, as I continue to do it again n again... maybe make basic helepr method that takes map, and size, and returns random val from it
 
 # we can have a base function which checks the col we need to generate data for...
 # then go on to call a helper method like this to generate tha actual data?
+def get_val_from_dict(dict, dict_len):
+    dict_choice = random.randint(0, dict_len -1)
+
+    return dict[dict_choice]
+
+def generate_id(id_len, id_low_range, id_high_range):
+    id = "".join([str(random.randint(id_low_range, id_high_range)) for i in range(0, id_len)])
+
+    return "_" + id
+
+def generate_lump(lower_range, upper_range):
+    lump_val = random.randrange(lower_range, upper_range)
+    
+    return "$" + "{:,}".format(lump_val)
+
+def generate_date(lower, upper):
+    # 0 - yr, 1 - mth, 2 - day
+    stime = datetime.date(lower[0], lower[1], lower[2])
+    dtime = datetime.date(upper[0], upper[1], upper[2])
+
+    time_between_dates = dtime - stime
+    days_between_dates = time_between_dates.days
+    random_number_of_days = random.randrange(days_between_dates)
+
+    dummy_date = stime + datetime.timedelta(days=random_number_of_days)
+
+    return str(dummy_date)
+
+def generate_iss_date(state):
+    possible_issuance = license_deltas[state]
+
+    curr_date = datetime.datetime.now()
+    frthst_date = curr_date - datetime.timedelta(weeks=(44 * possible_issuance)) 
+
+    curr_yr = curr_date.year
+    curr_mth = curr_date.month
+    curr_day = curr_date.day
+    upr = [curr_yr, curr_mth, curr_day]
+
+    frthst_yr = frthst_date.year
+    frthst_mth = frthst_date.month
+    frthst_day = frthst_date.day
+    lwr = [frthst_yr, frthst_mth, frthst_day]
+
+    return lwr,upr
+
+def generate_collateral():
+    collaterals = {0: 'Home', 1: 'Office', 2: 'Ranch', 3: 'Farm', 4: 'Car', 5: 'Truck'}
+    rand_coll_idx = random.randint(0, len(collaterals) - 1)
+    return collaterals[rand_coll_idx]
+
+def generate_clearing_bank():
+    return generate_bank()
+
+def generate_borrow_cap():
+    rand_bal = -1
+    while(rand_bal < 0):
+        rand_bal = np.random.normal(500000, 1000000, 1)
+
+    return "$" + "{:,}".format(int(rand_bal))
+
+def generate_borrower(scenario_df, scenario_idx):
+    return generate_emp_name(scenario_df, scenario_idx)
+
+def generate_banking_serv():
+    banking_servs = {0: 'Cash Management Service', 1: 'Foreign Exchange Service', 2: 'Lending/Credit Service', 3: 'Investment Service', 4: 'Insurance Service', 5: 'Merchant Service'}
+    rand_bank_serv_idx = random.randint(0, len(banking_servs) - 1)
+    return banking_servs[rand_bank_serv_idx]
+
+def generate_banking_prod():
+    banking_prods = {0: 'Checking Account', 1: 'Savings Account', 2: 'Certificate Of Deposit', 3: 'Debit', 4: 'Pre-Paid Card', 5: 'Credit Card'}
+    rand_bank_prod_idx = random.randint(0, len(banking_prods) - 1)
+    return banking_prods[rand_bank_prod_idx]
+
+def generate_bank_acc_id():
+    return generate_id(16, 0, 9)
+
+def generate_bank():
+    rand_bank_idx = random.randint(0, bank_names_len)
+    return bank_names_csv['name'][rand_bank_idx]
+
+#maybe base this off acc bal and amor amt?
+def generate_amor_sched():
+    amor_multiple = random.randint(0,11) #uhhhh r these mths, weeks, yrs??? assuming mths... will someone ever have amortization sched for 11 yrs???
+    return str(12 + (12 * amor_multiple))
+
+def generate_amor():
+    rand_bal = -1
+    while(rand_bal < 0):
+        rand_bal = np.random.normal(50000, 35000, 1)
+
+    return "$" + "{:,}".format(int(rand_bal))
+
+#generate interest
+#just generate another balance type var... dont have any rl trends to work off of in forming a realistic accrual
+def generate_accrual():
+    rand_bal = np.random.normal(5000, 750, 1)
+    return "$" + "{:,}".format(int(rand_bal)) 
+
+#dependent on if there are multiple accs with the client, and varying t&c between those accs... nto rlly sure if that can be deduce with other scenario fields, so just gen random yes/no for now
+def generate_acc_spec_serv_agree():
+    return generate_yes_or_no()
+
+def generate_acc_bal():
+    #maybe create gausian dist of avg savings???
+    rand_bal = np.random.normal(8000, 4000, 1)
+    return "$" + "{:,}".format(int(rand_bal))
+
+#curr just gen random num, as there doesnt seem to be any other field related to geolocation... so we cant deduce sections of the routing num
+def generate_route_num():
+    return generate_id(9, 0, 9)
+
+def generate_acc_num():
+    return generate_id(16, 0, 9)
+
+def generate_acc_id():
+    return generate_id(10, 0, 9)
+
+def generate_acc():
+    acc_types = {0: 'Personal Banking', 1: 'Professional Banking', 2: 'Investment Banking', 3: 'Retail Banking'}
+    rand_acc_idx = random.randint(0, len(acc_types) - 1)
+    return acc_types[rand_acc_idx]
+
+def generate_acc_holder(scenario_df, scenario_idx):
+    fname = generate_name("firstName", scenario_df, scenario_idx)
+    lname = generate_name("lastName", scenario_df, scenario_idx) #change to use last_name in future
+
+    return fname + " " + lname
+
+#As it curr stands, the following three methods... as well as the 4th one need some more clarification
+#what are the typical ranges?
+#are any of them dependent on another?
+#etc
+def generate_claim_sub_date():
+    return generate_date_first_consulted()
+
+def generate_claim_proc_date():
+    return generate_date_first_consulted()
+
+def generate_eff_date():
+    return generate_date_first_consulted()
+
+def generate_date_first_consulted():
+    lwr = [2019, 1, 1]
+    upr = [datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day]
+
+    return generate_date(lwr, upr)
+
+#this seems kinda pointless... if it will always be single, y have it???
+def generate_plan_type():
+    return "Single"
+
+#choose random or use stats on most used agencies to determine?
+def generate_agency_name():
+    agencies = {0: 'iHealthBrokers ', 1: 'Aetna', 2: 'United Healthcare', 3: 'Blue Cross Blue Shield', 4: 'Humana', 5: 'HealthMarkets Insurance', 6: 'Health Insurance Marketplace', 7: 'Kaiser foundation', 8: 'Cigna', 9: 'Anthem Inc.'}
+    agencies_len = len(agencies) - 1
+
+    rand_idx = random.randint(0, agencies_len)
+
+    return agencies[rand_idx]
+
+def generate_lic_num():
+    med_lic_prefixes = {} #possiby choose from some prefixes in the future... MD, PY, etc
+    lic_num_prefix = "".join([random.choice(string.ascii_letters).capitalize() for i in range(0,2)])
+    lic_num_suffix = "".join([str(random.randint(0,9)) for i in range(0,7)])
+
+    return lic_num_prefix + lic_num_suffix
+
+def generate_lic_iss_date(scenario_df, scenario_idx):
+    if("License_Issue_State" in scenario_df):
+        iss_state = scenario_df["License_Issue_State"][scenario_idx]
+        lwr, upr = generate_iss_date(iss_state)
+        musta_been_issued_on = generate_date(lwr, upr)
+
+        return musta_been_issued_on
+
+    #if License_Issue_State isnt checked for the scenario, then just choose a random one fro mour dict
+    else:
+        # get random state and get its exp delta
+        rand_iss_state = random.choice(list(license_deltas.keys()))
+        lwr, upr = generate_iss_date(rand_iss_state)
+        musta_been_issued_on = generate_date(lwr, upr)
+
+        return musta_been_issued_on
+
+def generate_lic_exp_date(scenario_df, scenario_idx):
+    #if an iss date is given, check if a iss state is also given
+    ### if it is, then add that states iss lifetime to the iss date to get the exp date
+    ### if not, grab a random iss lifetime from the iss lifetime dict... this does... kinda cause problems tho, if the iss date was also decided this way... there will be diff iss lifetimes grabbed in all likelihood
+    if("License_Issue_Date" in scenario_df):
+        iss_date = datetime.datetime.strptime(scenario_df["License_Issue_Date"][scenario_idx], "%Y-%m-%d")
+
+        if("License_Issue_State" in scenario_df):
+            iss_state = scenario_df["License_Issue_State"][scenario_idx]
+            issuance_delta = license_deltas[iss_state]
+
+            exp_date = iss_date + datetime.timedelta(weeks=52 * issuance_delta)
+
+            return str(exp_date.date())
+
+        else:
+            #the state we use here for delta will be diff from the one use in the rand state iss... seeing as we use random.choice each time... so there wont be any concise
+            #iss/exp dates for scenarios with no lic iss state... hmmmm
+            rand_iss_state = random.choice(list(license_deltas.keys()))
+            issuance_delta = license_deltas[rand_iss_state]
+
+            exp_date = iss_date + datetime.timedelta(weeks=52 * issuance_delta)
+
+            return str(exp_date.date())
+    #if no iss date is given, stil do a check to see if iss state is;
+    ### if it is, then use that states iss lifetime to form an exp date,
+    ### if not, then just grab a random iss lifetime from our dict
+    else:
+        if("License_Issue_State" in scenario_df):
+            iss_state = scenario_df["License_Issue_State"][scenario_idx]
+            issuance_delta = license_deltas[iss_state]
+            exp_date = datetime.datetime.now() + datetime.timedelta(weeks=52 * issuance_delta + (random.randint(1, 25) * random.choice((-1,1))))
+
+            return str(exp_date.date())
+        else:
+            rand_iss_state = random.choice(list(license_deltas.keys()))
+            issuance_delta = license_deltas[rand_iss_state]
+
+            exp_date = datetime.datetime.now() + datetime.timedelta(weeks=52 * issuance_delta + (random.randint(1, 25) * random.choice((-1,1))))
+
+            return str(exp_date.date())
+
+#may have to add conditional check on state in future...
+def generate_medicare_state():
+    return generate_yes_or_no()
+
+# maybe have to add condition checks + weights on choice
+def generate_broker_status():
+    choice = generate_yes_or_no()
+    if(choice == "Yes"):
+        return "Active"
+    else:
+        return "Inactive"
+
+def generate_emp_name(scenario_df, scenario_idx):
+    if("State" in scenario_df):
+        scenario_state = scenario_df["State"][scenario_idx]
+        filtered_employers = employers_data_csv.loc[employers_data_csv['state_code'] == scenario_state].reset_index()
+        specific_emp_len = len(filtered_employers) - 1
+        rand_emp = random.randint(0, specific_emp_len)
+
+        employer = filtered_employers.loc[rand_emp]['name']
+
+        return employer
+
+    else:
+        random_emp_idx = random.randint(0, employers_data_len)
+        random_emp = employers_data_csv["name"][random_emp_idx]
+        employer = random_emp
+
+        return employer
+
+# possibly need to come back to add formatting rules
+def generate_caqh_id():
+    return generate_id(8, 0 ,9)
+
+# possibly need to come back to add formatting rules
+def generate_brok_num():
+    return generate_id(9, 0, 9)
+
+# possibly need to come back to add formatting rules
+def generate_npi_num():
+    return generate_id(10, 0, 9)
+
+def generate_ptan_num():
+    return generate_id(6,0,9)
+
+def generate_amt_to_hsa():
+    return generate_lump(1,100)
+
+def generate_benefits():
+    possible_benefits = {0: "Medical", 1: "HSA", 2: "Dental", 3: "Vision"}
+    benefits_len = len(possible_benefits) - 1
+    rand_amt_of_benefits = random.randint(0, benefits_len)
+
+    random_benefits = []
+
+    for i in range(0, rand_amt_of_benefits):
+        random_benefit_idx = random.randint(0, benefits_len)
+        if(possible_benefits[random_benefit_idx] not in random_benefits):
+            random_benefits.append(possible_benefits[random_benefit_idx])
+
+    benefits = "None"
+    if(len(random_benefits) > 0):
+        benefits = ", ".join(random_benefits)
+
+    return benefits
+
+def generate_broker_bonus():
+    return generate_lump(1, 1000)
+
+def generate_broker_comm():
+    return generate_lump(1, 10000)
+
+# possibly need to come back to add formatting rules
+def generate_claim_id():
+    return generate_id(9, 0, 9)
+
+def generate_tot_bill():
+    return generate_lump(1, 10000)
+
+# possibly need to come back to add formatting rules
+def generate_hospital_id():
+    return generate_id(9, 0, 9)
+
+def generate_claim_status():
+    statuses = {0: "In Progress", 1: "Accepted", 2: "Rejected"}
+    return get_val_from_dict(statuses, len(statuses))
+
+def generate_cpt_code():
+    return generate_id(5, 0, 9)
+
+def generate_illness():
+    illnesses = {0: 'Fever', 1: 'Surgery', 2: 'Viral', 3: 'Other', 4: 'Fracture'}
+
+    return get_val_from_dict(illnesses, len(illnesses))
+
+def generate_pol_id():
+    return generate_id(15, 0, 9)
+
+def generate_dental_spec():
+    dental_specs = {0: 'General Dentist', 1: 'Oral Surgeon', 2: 'Pedodontist', 3: 'Endodontist', 4: 'Other'}
+
+    return get_val_from_dict(dental_specs, len(dental_specs))
+
+def generate_participating_assoc():
+    associations = {0: 'DBO', 1: 'PPO'}
+
+    return get_val_from_dict(associations, len(associations))
+
+def generate_med_spec():
+    med_specs = {0: 'Neurology', 1: 'Endocrenology', 2: 'Dermatology', 3: 'Cardiology', 4: 'Pathology', 5: 'Pediatrics', 6: 'Others'}
+
+    return get_val_from_dict(med_specs, len(med_specs))
+
+def generate_pop_worked_with():
+    pops = ['35 and under', '36-45', '46-55', '56-65', '66+']
+    pop_likeliness = (11.2, 19.8, 22.9, 29, 17)
+
+    pop_worked_with = random.choices(pops, weights=pop_likeliness, k=1)[0]
+
+    return pop_worked_with
+
+def generate_apply_as():
+    apply_spec = {0: 'Specialist', 1: 'Primary Care Physician', 2: 'Allied'}
+    apply_as_choice = random.randint(0, len(apply_spec) -1)
+
+    return apply_spec[apply_as_choice]
+
+def generate_behavioral_spec():
+    behavioral_specs = {0: 'Child Psychiatry', 1: 'Clinical Psychology', 2: 'Psychiatric Nurse', 3: 'Other'}
+    spec_choice = random.randint(0, len(behavioral_specs) - 1)
+
+    return behavioral_specs[spec_choice]
+
+def generate_pay_comm_to():
+    recipients = {0: "Broker", 1: "Agent"}
+    recipient_choice = random.randint(0,1)
+
+    return recipients[recipient_choice]
 
 def generate_pol_num():
     max_size = 10
@@ -281,10 +871,11 @@ def generate_gender(scenario_df, scenario_idx):
 
 ###################### come back when lname csv is made #########################
 def generate_name(column_name, scenario_df, scenario_idx):
-    if(column_name == "firstName" or column_name == "Insured_First_Name" or column_name == "Spouse_First_Name"):
+    name = "Jane Doe"
+    if(column_name == "firstName" or column_name == "Insured_First_Name" or column_name == "Spouse_First_Name" or column_name == "First_Name" or column_name == "Physician_Name"):
         fname_rand_idx = random.randint(0, fname_size)
         name = fname_csv["firstname"][fname_rand_idx]
-    elif(column_name == "lastName" or column_name == "Insured_Last_Name" or column_name == "Insured_Middle_Name"):
+    elif(column_name == "lastName" or column_name == "Insured_Last_Name" or column_name == "Last_Name" or column_name == "Insured_Middle_Name"):
         # change this to use lname csv once i generate that...
         lname_rand_idx = random.randint(0, fname_size)
         name = fname_csv["firstname"][lname_rand_idx]
@@ -292,6 +883,8 @@ def generate_name(column_name, scenario_df, scenario_idx):
         spouse_lname = ""
         if("Insured_Last_Name" in scenario_df):
             spouse_lname = scenario_df["Insured_Last_Name"][scenario_idx]
+        elif("Last_Name" in scenario_df):
+            spouse_lname = scenario_df["Last_Name"][scenario_idx]
         else:
             # change this as well to use lname csv once its made
             lname_rand_idx = random.randint(0, fname_size)
@@ -313,6 +906,7 @@ def generate_phone_num():
 
     return dummy_nummy
 
+#use weihts maybe?
 def generate_marital_status(scenario_df, scenario_idx):
     marital_statuses = {0: "Married", 1: "Single", 2: "Divorced"}
     hasSpouse = False
@@ -348,21 +942,31 @@ def generate_miles_per_yr(scenario_df, scenario_idx):
     else:
         return random.randint(1000, 200000)
 
-# this vs street address hmmmmm... probably remove one of em
-def generate_address():
-    return "boonky"
-
 def generate_garage_address(scenario_df, scenario_idx):
     address = generate_street_address(scenario_df, scenario_idx, True)
     zip_code = generate_zip()
 
     return address + " - " + zip_code
 
+# probably should do something with this
 def generate_DOB():
     # check if isSpouse is true... if so, make the person age 18 or up.
     # also, if isSpouse is true, the delta between the DOB we generate and the spouse DOB we generate shouldnt be more than like 15yrs
-    stime = datetime.date(1925, 1, 1)
-    dtime = datetime.date(2002, 1, 1)
+
+    # percentage of ppl by age
+    birth_ranges = [(18, 24), (25,44), (45,64), (65, 80), (81, 99)]
+    age_whts = (9.6, 30.2, 22, 12.4, 5.8)
+
+    chc = random.choices(birth_ranges, weights=age_whts, k=1)[0]
+
+    curr_yr = datetime.datetime.now().year
+
+    lwr_bound = curr_yr - chc[1]
+    upr_bound = curr_yr - chc[0]
+
+
+    stime = datetime.date(lwr_bound, 1, 1)
+    dtime = datetime.date(upr_bound, 1, 1)
 
     time_between_dates = dtime - stime
     days_between_dates = time_between_dates.days
@@ -372,11 +976,11 @@ def generate_DOB():
 
     return str(dummy_date)
 
+# this is kinda the same as... date of purchase?
+# hmm whats really different here tho?
+# a person could of gotten a license between when they were born n current day(1-1-2020 in this case)
+# they also coulda gotten a whole car then(date of purchase...) but they would always have the license before the purchase... so, date of purchase should maybe instead rely on date of license!
 def generate_age_while_take_license(scenario_df, scenario_idx):
-    # this is kinda the same as... date of purchase?
-    # hmm whats really different here tho?
-    # a person could of gotten a license between when they were born n current day(1-1-2020 in this case)
-    # they also coulda gotten a whole car then(date of purchase...) but they would always have the license before the purchase... so, date of purchase should maybe instead rely on date of license!
     if("Date_Of_Birth" in scenario_df):
         dob_yr = scenario_df["Date_Of_Birth"][scenario_idx].split("-")[0]
         date_of_purch_delta = int(dob_yr) + 18 #get the yr person was born, add 18 yrs, as i dont think theyd have a policy up until they were at least 18
@@ -397,14 +1001,28 @@ def generate_age_while_take_license(scenario_df, scenario_idx):
 
         return str(2020 - int(rando_yr))
 
+# may need to add check that vin is unique
+# update logic for VIN generation 
+# should vin be consistent with geo details(state,county,city)? and make/model? for now, just make sure it looks rl, but not consistent yet
 def generate_vin():
-    # set up static size of around 11, but this can go up to range to 50!
     vin_size = 17
+    vin_manu_sect = "" #first 3 digits
+    vin_desc_sect = "" #4th thru 9th digits
+    vin_ident_sect = "" #10th thru 17th digits
+
+    # for i in range(0,3):
+    #     if(i == 0):
+    #         num_or_letter = generate_yes_or_no()
+    #         if(num_or_letter == "Yes"):
+    #             vin_num += str(random.randint(0, 9))
+    #         else:
+    #             vin_num += random.choice(string.ascii_letters).capitalize()
+
     vin_num = ""
     for i in range(0, vin_size):
         num_or_letter = generate_yes_or_no()
         if(num_or_letter == "Yes"):
-            vin_num += str(random.randint(0, 9))
+            vin_num += str(random.randint(1, 9))
         else:
             vin_num += random.choice(string.ascii_letters).capitalize()
     
@@ -418,7 +1036,7 @@ def generate_street_address(scenario_df, scenario_idx, forGarage):
 
     # get house num if apt isnt chosen
     if("Apt" not in scenario_df or forGarage):
-        add_num = "".join([str(random.randint(0,9)) for i in range(1,random.randint(3,4))])
+        add_num = "".join([str(random.randint(1,9)) for i in range(1,random.randint(3,4))])
         address += (add_num + " ")
     
     # get rando county name to fill in for street name... they all look similar anyway. may want to change this in the future
@@ -541,6 +1159,12 @@ def generate_email_address(scenario_df, scenario_idx):
     if("Insured_First_Name" in scenario_df):
         isFName = True
         fName = scenario_df["Insured_First_Name"][scenario_idx]
+    if("Last_Name" in scenario_df):
+        isLName = True
+        lName = scenario_df["Last_Name"][scenario_idx]
+    if("First_Name" in scenario_df):
+        isFName = True
+        fName = scenario_df["First_Name"][scenario_idx]
 
     if(isFName and isLName):
         email_prefix = fName[0]
@@ -580,13 +1204,16 @@ def generate_data_of_purch(scenario_df, scenario_idx):
     else:
         return generate_DOB()
 
-def generate_emp_status():
-    # gonna test weight choices with the cool py mod...
-    status = ["Employed", "Unemployed", "Self-Employed"]
+def generate_emp_status(scenario_df, scenario_idx):
+    if("Employer_Name" in scenario_df):
+        return "Employed"
+    else:
+        # gonna test weight choices with the cool py mod...
+        status = ["Employed", "Unemployed", "Self-Employed"]
 
-    random_status = random.choices(status, weights=(60,10,30), k=1)[0]
+        random_status = random.choices(status, weights=(60,10,30), k=1)[0]
 
-    return random_status
+        return random_status
 
 def generate_secondary_driver():
     possible_drivers = ["Cousin", "Spouse", "Parent", "Child", "Grandparent", "Sibling", "None"]
@@ -699,6 +1326,54 @@ def generate_rental_reimb_lim():
     rent_reimb_lim += "$" + str(total_val) + " max"
 
     return rent_reimb_lim
+
+# may need to add check that ssn generated is unique
+def generate_ssn():
+    first_sec = ""
+    midd_sec = ""
+    final_sec = ""
+
+    # generate 1st section
+    for i in range(0,3):
+        # make sure we dont get three 0s in a row
+        if(len(first_sec) == 2):
+            if(first_sec == "00"):
+                rando_digit = random.randint(1,9)
+                first_sec += str(rando_digit)
+            elif(first_sec == "66"):
+                rando_digit = random.randint(0,9)
+                while(rando_digit == "6"):
+                    rando_digit = random.randint(0,9)
+                
+                first_sec += str(rando_digit)
+            else:
+                rando_digit = random.randint(0,9)
+                first_sec += str(rando_digit)
+        else:
+            rando_digit = random.randint(0,9)
+            first_sec += str(rando_digit)
+    
+    # generate midd section
+    for i in range(0,2):
+        if(len(midd_sec) == 1):
+            rando_digit = random.randint(1,9)
+            midd_sec += str(rando_digit)
+        else:
+            rando_digit = random.randint(0,9)
+            midd_sec += str(rando_digit)
+
+    # generate final section
+    for i in range(0, 4):
+        if(len(final_sec) == 3):
+            rando_digit = random.randint(1, 9)
+            final_sec += str(rando_digit)
+        else:
+            rando_digit = random.randint(0,9)
+            final_sec += str(rando_digit)
+
+    # concatanate
+    ssn =  first_sec + "-" + midd_sec + "-" + final_sec 
+    return ssn
 
 def generate_yes_or_no():
     x = random.uniform(0,1)
